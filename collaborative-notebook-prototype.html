@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Career - Collaborative Notebook Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #1a1a2e;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: transparent;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .view-btn.active {
+            background: #4361ee;
+            border-color: #4361ee;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 56px;
+            height: calc(100vh - 56px);
+        }
+
+        /* Learning Content Panel */
+        .content-panel {
+            flex: 1;
+            padding: 32px 48px;
+            overflow-y: auto;
+            background: white;
+            position: relative;
+        }
+
+        .content-panel h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #1a1a2e;
+        }
+
+        .content-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .content-section {
+            position: relative;
+            margin-bottom: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .content-section:hover {
+            background: #f8f9fa;
+        }
+
+        .content-section p {
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .content-section h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #1a1a2e;
+        }
+
+        /* Confusion Heatmap Overlay */
+        .heatmap-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .instructor-view .heatmap-bar {
+            opacity: 1;
+        }
+
+        .heatmap-low { background: #28a745; }
+        .heatmap-medium { background: #ffc107; }
+        .heatmap-high { background: #dc3545; }
+
+        /* Spark Highlight - Subtle inline highlight for instructor questions */
+        .spark-highlight {
+            position: relative;
+            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.15) 60%);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .spark-highlight:hover {
+            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.3) 60%);
+        }
+
+        /* Spark icon that appears on hover */
+        .spark-highlight::after {
+            content: "✨";
+            position: absolute;
+            right: -24px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            font-size: 16px;
+            opacity: 0;
+            transition: all 0.2s;
+        }
+
+        .spark-highlight:hover::after {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Active state when spark question is shown */
+        .spark-highlight.active {
+            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.4) 60%);
+        }
+
+        .spark-highlight.active::after {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Teaching Moment */
+        .teaching-moment {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        .teaching-moment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .teaching-moment p {
+            color: #856404;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* Notebook Panel */
+        .notebook-panel {
+            width: 420px;
+            background: #fafafa;
+            border-left: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notebook-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .notebook-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        /* Search and Filter */
+        .notebook-search-filter {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .notebook-search {
+            flex: 1;
+            position: relative;
+        }
+
+        .notebook-search input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #f8f9fa;
+        }
+
+        .notebook-search input:focus {
+            outline: none;
+            border-color: #4361ee;
+            background: white;
+        }
+
+        .notebook-search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 14px;
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-btn {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+        }
+
+        .filter-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .filter-btn.active {
+            border-color: #4361ee;
+            color: #4361ee;
+            background: #f0f4ff;
+        }
+
+        .filter-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 160px;
+            z-index: 100;
+            display: none;
+        }
+
+        .filter-menu.show {
+            display: block;
+        }
+
+        .filter-option {
+            padding: 10px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #333;
+        }
+
+        .filter-option:hover {
+            background: #f8f9fa;
+        }
+
+        .filter-option:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .filter-option:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        .filter-option.selected {
+            color: #4361ee;
+            background: #f0f4ff;
+        }
+
+        /* Reaction card in My Notes */
+        .reaction-card {
+            background: white;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .reaction-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .reaction-card-icon.insightful {
+            background: #fff8e1;
+        }
+
+        .reaction-card-icon.unclear {
+            background: #fff3e0;
+        }
+
+        .reaction-card-icon.revisit {
+            background: #e3f2fd;
+        }
+
+        .reaction-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .reaction-card-text {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .reaction-card-meta {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .reaction-card-remove {
+            color: #ccc;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .reaction-card-remove:hover {
+            color: #999;
+        }
+
+        .notebook-tab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .notebook-tab:hover {
+            background: #f0f0f0;
+        }
+
+        .notebook-tab.active {
+            background: #4361ee;
+            color: white;
+        }
+
+        .notebook-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        /* Spark Question Card - appears in right panel */
+        .spark-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .spark-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .spark-card-header .spark-icon {
+            font-size: 16px;
+        }
+
+        .spark-card-context {
+            font-size: 11px;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .spark-card-question {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .spark-card-video {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .spark-card-video:hover {
+            background: rgba(0,0,0,0.3);
+        }
+
+        .spark-card-video-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .spark-card-video-text {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .spark-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .spark-card-btn {
+            flex: 1;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .spark-card-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .spark-card-btn.primary {
+            background: white;
+            color: #667eea;
+            border-color: white;
+            font-weight: 500;
+        }
+
+        .spark-card-btn.primary:hover {
+            background: #f0f0f0;
+        }
+
+        .spark-card-responses {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 13px;
+            opacity: 0.9;
+            cursor: pointer;
+        }
+
+        .spark-card-responses:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .spark-card-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .spark-card-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Note Card */
+        .note-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+
+        .note-card.featured {
+            border: 2px solid #4361ee;
+            background: #f8f9ff;
+        }
+
+        .note-card.featured::before {
+            content: "Featured by Instructor";
+            display: block;
+            font-size: 11px;
+            color: #4361ee;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .note-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .note-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #4361ee;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .note-meta {
+            flex: 1;
+        }
+
+        .note-author {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .note-context {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .note-visibility {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .note-visibility.private {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .note-body {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .note-highlight {
+            background: #fff3cd;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-style: italic;
+            margin-bottom: 12px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .note-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Upvote/Downvote system */
+        .vote-controls {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .vote-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .vote-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .vote-btn.upvote:hover,
+        .vote-btn.upvote.active {
+            color: #4361ee;
+            background: #eef1ff;
+        }
+
+        .vote-btn.downvote:hover,
+        .vote-btn.downvote.active {
+            color: #dc3545;
+            background: #ffeeee;
+        }
+
+        .vote-count {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .note-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .note-action:hover {
+            background: #f0f0f0;
+        }
+
+        .note-action.active {
+            color: #4361ee;
+        }
+
+        /* New Note Composer */
+        .note-composer {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .composer-highlight {
+            background: #fff3cd;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .composer-highlight.active {
+            display: block;
+        }
+
+        .composer-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .composer-textarea:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
+        .composer-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .visibility-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 22px;
+            background: #ccc;
+            border-radius: 11px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle-switch.active {
+            background: #4361ee;
+        }
+
+        .toggle-switch::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.2s;
+        }
+
+        .toggle-switch.active::after {
+            left: 20px;
+        }
+
+        .post-btn {
+            padding: 8px 20px;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .post-btn:hover {
+            background: #3651d4;
+        }
+
+        /* Instructor Dashboard */
+        .instructor-dashboard {
+            display: none;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .instructor-view .content-panel,
+        .instructor-view .notebook-panel {
+            display: none;
+        }
+
+        .instructor-view .instructor-dashboard {
+            display: block;
+            flex: 1;
+        }
+
+        .dashboard-header {
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .dashboard-header p {
+            color: #666;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-card h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Heatmap Visualization */
+        .heatmap-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .heatmap-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .heatmap-item:hover {
+            background: #f0f0f0;
+        }
+
+        .heatmap-bar-viz {
+            width: 60px;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .heatmap-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .heatmap-item-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .heatmap-item-count {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Featured Questions List */
+        .featured-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .featured-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #4361ee;
+        }
+
+        .featured-item-text {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .featured-item-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .feature-btn {
+            padding: 4px 12px;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        /* Create Spark Question Form */
+        .create-spark-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .create-spark-form select,
+        .create-spark-form textarea,
+        .create-spark-form input {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .create-spark-form textarea {
+            min-height: 80px;
+            resize: none;
+        }
+
+        .create-spark-form button {
+            align-self: flex-end;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Teaching Moment Form */
+        .create-teaching-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .create-teaching-form input,
+        .create-teaching-form textarea {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .create-teaching-form textarea {
+            min-height: 80px;
+            resize: none;
+        }
+
+        .create-teaching-form button {
+            align-self: flex-end;
+            padding: 8px 16px;
+            background: #ffc107;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Highlight Selection */
+        .highlight-tooltip {
+            position: absolute;
+            background: #1a1a2e;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .highlight-tooltip-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-tooltip button.add-note-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .highlight-tooltip button.add-note-btn:hover {
+            background: #3651d4;
+        }
+
+        .highlight-tooltip-divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .highlight-reactions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .highlight-reaction {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .highlight-reaction:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+
+        .highlight-reaction.selected {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .note-card {
+            animation: slideIn 0.3s ease;
+        }
+
+        /* Stats Badge */
+        .stats-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .stats-badge.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .stats-badge.danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Section divider in notebook */
+        .notebook-section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .notebook-section-divider::before,
+        .notebook-section-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="logo">Canvas Career</div>
+        <div class="view-toggle">
+            <button class="view-btn active" onclick="setView('learner')">Learner View</button>
+            <button class="view-btn" onclick="setView('instructor')">Instructor Dashboard</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+        <!-- Learning Content Panel -->
+        <div class="content-panel" id="contentPanel">
+            <h1>Introduction to Recursion</h1>
+            <p class="content-meta">Module 3 • Lesson 2 • 15 min read</p>
+
+            <div class="content-section" data-section="1">
+                <div class="heatmap-bar heatmap-low"></div>
+                <h2>What is Recursion?</h2>
+                <p>Recursion is a programming technique where <span class="spark-highlight" data-spark="1" onclick="showSparkQuestion(1)">a function calls itself to solve a problem</span>. Instead of using loops to repeat operations, recursive functions break down complex problems into smaller, similar subproblems. Each recursive call works on a smaller piece of the original problem until reaching a simple case that can be solved directly.</p>
+            </div>
+
+            <div class="content-section" data-section="2">
+                <div class="heatmap-bar heatmap-high"></div>
+                <h2>The Base Case</h2>
+                <p>Every recursive function needs a <strong>base case</strong> - <span class="spark-highlight" data-spark="2" onclick="showSparkQuestion(2)">a condition where the function stops calling itself and returns a direct result</span>. Without a base case, the function would call itself infinitely, eventually causing a stack overflow error. The base case is like the "exit door" of your recursion - it tells the function when to stop.</p>
+            </div>
+
+            <!-- Teaching Moment -->
+            <div class="teaching-moment">
+                <div class="teaching-moment-header">
+                    <span>📢</span>
+                    <span>Teaching Moment from Dr. Smith</span>
+                </div>
+                <p>I've noticed many of you found base cases unclear. Here's a simple way to think about it: <strong>the base case is the answer you already know</strong>. For factorial, you know that 1! = 1. For Fibonacci, you know F(0) = 0 and F(1) = 1. Start with what you know, and recursion handles the rest!</p>
+            </div>
+
+            <div class="content-section" data-section="3">
+                <div class="heatmap-bar heatmap-medium"></div>
+                <h2>The Recursive Case</h2>
+                <p>The <strong>recursive case</strong> is where the function calls itself with a modified input, moving closer to the base case. <span class="spark-highlight" data-spark="3" onclick="showSparkQuestion(3)">Each recursive call should make progress toward the base case</span> - if you're counting down, decrease the number; if you're processing a list, work with a smaller portion. This progress is essential to prevent infinite recursion.</p>
+            </div>
+
+            <div class="content-section" data-section="4">
+                <div class="heatmap-bar heatmap-low"></div>
+                <h2>Example: Factorial Function</h2>
+                <p>Let's look at computing factorial (n!). The factorial of 5 is 5 × 4 × 3 × 2 × 1 = 120. Recursively, we can express this as: factorial(n) = n × factorial(n-1), with the base case factorial(1) = 1. Each call multiplies the current number by the factorial of one less, until we reach 1.</p>
+                <pre style="background: #f4f4f4; padding: 16px; border-radius: 8px; margin-top: 12px; font-size: 14px;">
+function factorial(n) {
+    if (n <= 1) return 1;      // Base case
+    return n * factorial(n-1); // Recursive case
+}</pre>
+            </div>
+        </div>
+
+        <!-- Notebook Panel -->
+        <div class="notebook-panel" id="notebookPanel">
+            <div class="notebook-header">
+                <div class="notebook-tabs">
+                    <button class="notebook-tab active" onclick="setTab('activity')">Activity</button>
+                    <button class="notebook-tab" onclick="setTab('mine')">My Notes</button>
+                </div>
+                <div class="notebook-search-filter">
+                    <div class="notebook-search">
+                        <span class="notebook-search-icon">🔍</span>
+                        <input type="text" placeholder="Search..." id="notebookSearch" oninput="handleSearch(this.value)">
+                    </div>
+                    <div class="filter-dropdown">
+                        <button class="filter-btn" onclick="toggleFilterMenu()">
+                            <span>Filter</span>
+                            <span>▾</span>
+                        </button>
+                        <div class="filter-menu" id="filterMenu">
+                            <div class="filter-option selected" onclick="setFilter('all')">All</div>
+                            <div class="filter-option" onclick="setFilter('notes')">📝 Notes</div>
+                            <div class="filter-option" onclick="setFilter('insightful')">💡 Insightful</div>
+                            <div class="filter-option" onclick="setFilter('unclear')">❓ Unclear</div>
+                            <div class="filter-option" onclick="setFilter('revisit')">🔖 Revisit</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notebook-content" id="notebookContent">
+                <!-- Spark Question Card (hidden by default, shown when user clicks highlighted text) -->
+                <div class="spark-card" id="sparkCard" style="display: none; position: relative;">
+                    <button class="spark-card-close" onclick="hideSparkQuestion()">×</button>
+                    <div class="spark-card-header">
+                        <span class="spark-icon">✨</span>
+                        <span>Instructor Question</span>
+                        <span class="spark-card-context" id="sparkContext">on highlighted text</span>
+                    </div>
+                    <div class="spark-card-question" id="sparkQuestionText">
+                        <!-- Question text will be inserted here -->
+                    </div>
+                    <!-- Optional video -->
+                    <div class="spark-card-video" id="sparkVideo" style="display: none;" onclick="playSparkVideo()">
+                        <div class="spark-card-video-icon">▶️</div>
+                        <div class="spark-card-video-text">Watch Dr. Smith's 45-second explanation</div>
+                    </div>
+                    <div class="spark-card-actions">
+                        <button class="spark-card-btn" onclick="viewSparkResponses()">See responses</button>
+                        <button class="spark-card-btn primary" onclick="answerSparkQuestion()">Write answer</button>
+                    </div>
+                    <div class="spark-card-responses" onclick="viewSparkResponses()">
+                        👥 <span id="sparkResponseCount">23</span> students answered
+                    </div>
+                </div>
+
+                <div class="notebook-section-divider">Peer Insights</div>
+
+                <!-- Featured Note -->
+                <div class="note-card featured">
+                    <div class="note-header">
+                        <div class="note-avatar">AK</div>
+                        <div class="note-meta">
+                            <div class="note-author">Alex Kim</div>
+                            <div class="note-context">on "The Base Case"</div>
+                        </div>
+                    </div>
+                    <div class="note-highlight">"a condition where the function stops calling itself"</div>
+                    <div class="note-body">I finally get it! The base case is like the ground floor of an elevator - you HAVE to stop somewhere, or you'll keep going down forever. Without it, your code just... crashes.</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote active" onclick="vote(this, 'up')">▲</button>
+                            <span class="vote-count">24</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                        </div>
+                        <span class="note-action">💬 5 replies</span>
+                    </div>
+                </div>
+
+                <!-- Regular Note -->
+                <div class="note-card">
+                    <div class="note-header">
+                        <div class="note-avatar" style="background: #e91e63;">MJ</div>
+                        <div class="note-meta">
+                            <div class="note-author">Maria Johnson</div>
+                            <div class="note-context">on "What is Recursion?"</div>
+                        </div>
+                    </div>
+                    <div class="note-body">Think of recursion like Russian nesting dolls (matryoshka). Each doll contains a smaller version of itself until you reach the smallest one that's solid - that's your base case!</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
+                            <span class="vote-count">18</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                        </div>
+                        <span class="note-action">💬 3 replies</span>
+                    </div>
+                </div>
+
+                <!-- Note with question -->
+                <div class="note-card">
+                    <div class="note-header">
+                        <div class="note-avatar" style="background: #ff9800;">TC</div>
+                        <div class="note-meta">
+                            <div class="note-author">Tyler Chen</div>
+                            <div class="note-context">on "The Recursive Case"</div>
+                        </div>
+                    </div>
+                    <div class="note-highlight">"Each recursive call should make progress toward the base case"</div>
+                    <div class="note-body">Wait, so what happens if my recursive call doesn't make progress? Like if I accidentally did factorial(n) instead of factorial(n-1)? Would it still crash even with a base case?</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
+                            <span class="vote-count">7</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                        </div>
+                        <span class="note-action active">💬 2 replies</span>
+                    </div>
+                </div>
+
+                <!-- Instructor response note -->
+                <div class="note-card" style="border-left: 3px solid #4361ee; margin-left: 24px;">
+                    <div class="note-header">
+                        <div class="note-avatar" style="background: #1a1a2e;">DS</div>
+                        <div class="note-meta">
+                            <div class="note-author">Dr. Smith <span style="background: #4361ee; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 4px;">Instructor</span></div>
+                            <div class="note-context">replying to Tyler</div>
+                        </div>
+                    </div>
+                    <div class="note-body">Great question, Tyler! Yes, it would still crash. The base case only helps if you can actually reach it. If factorial(5) calls factorial(5) which calls factorial(5)... you never get to n=1. Try it in your debugger!</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote active" onclick="vote(this, 'up')">▲</button>
+                            <span class="vote-count">12</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                        </div>
+                        <span class="note-action">💬 Reply</span>
+                    </div>
+                </div>
+
+                <!-- Another note -->
+                <div class="note-card">
+                    <div class="note-header">
+                        <div class="note-avatar" style="background: #9c27b0;">SP</div>
+                        <div class="note-meta">
+                            <div class="note-author">Sarah Park</div>
+                            <div class="note-context">on "Example: Factorial Function"</div>
+                        </div>
+                    </div>
+                    <div class="note-body">Pro tip: I traced through factorial(4) on paper step by step. Seeing the call stack build up and then "unwind" as each call returns really helped it click. Highly recommend trying this!</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
+                            <span class="vote-count">31</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                        </div>
+                        <span class="note-action">💬 8 replies</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Note Composer -->
+            <div class="note-composer">
+                <div class="composer-highlight" id="composerHighlight">
+                    <strong>Highlighted:</strong> <span id="highlightText"></span>
+                </div>
+                <textarea class="composer-textarea" placeholder="Write a note... (highlight text in the content to attach it to your note)"></textarea>
+                <div class="composer-footer">
+                    <div class="visibility-toggle">
+                        <span>Share with class</span>
+                        <div class="toggle-switch active" onclick="toggleVisibility(this)"></div>
+                    </div>
+                    <button class="post-btn">Post Note</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructor Dashboard -->
+        <div class="instructor-dashboard" id="instructorDashboard">
+            <div class="dashboard-header">
+                <h1>Instructor Dashboard</h1>
+                <p>Module 3: Introduction to Recursion • 127 students enrolled</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Confusion Heatmap -->
+                <div class="dashboard-card">
+                    <h2>❓ Clarity Heatmap</h2>
+                    <div class="heatmap-list">
+                        <div class="heatmap-item" onclick="jumpToSection(2)">
+                            <div class="heatmap-bar-viz">
+                                <div class="heatmap-bar-fill" style="width: 85%; background: #dc3545;"></div>
+                            </div>
+                            <span class="heatmap-item-text">The Base Case</span>
+                            <span class="stats-badge danger">47 unclear</span>
+                        </div>
+                        <div class="heatmap-item" onclick="jumpToSection(3)">
+                            <div class="heatmap-bar-viz">
+                                <div class="heatmap-bar-fill" style="width: 45%; background: #ffc107;"></div>
+                            </div>
+                            <span class="heatmap-item-text">The Recursive Case</span>
+                            <span class="stats-badge warning">18 unclear</span>
+                        </div>
+                        <div class="heatmap-item" onclick="jumpToSection(4)">
+                            <div class="heatmap-bar-viz">
+                                <div class="heatmap-bar-fill" style="width: 15%; background: #28a745;"></div>
+                            </div>
+                            <span class="heatmap-item-text">Example: Factorial</span>
+                            <span class="stats-badge">5 unclear</span>
+                        </div>
+                        <div class="heatmap-item" onclick="jumpToSection(1)">
+                            <div class="heatmap-bar-viz">
+                                <div class="heatmap-bar-fill" style="width: 10%; background: #28a745;"></div>
+                            </div>
+                            <span class="heatmap-item-text">What is Recursion?</span>
+                            <span class="stats-badge">3 unclear</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions to Feature -->
+                <div class="dashboard-card">
+                    <h2>❓ Student Questions</h2>
+                    <div class="featured-list">
+                        <div class="featured-item">
+                            <div class="featured-item-text">"What happens if my recursive call doesn't make progress toward the base case?"</div>
+                            <div class="featured-item-meta">
+                                Tyler Chen • 7 upvotes
+                                <button class="feature-btn" onclick="featureQuestion(this)">⭐ Feature</button>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <div class="featured-item-text">"Is there a maximum depth for recursion? How deep can it go?"</div>
+                            <div class="featured-item-meta">
+                                Jamie Lee • 4 upvotes
+                                <button class="feature-btn" onclick="featureQuestion(this)">⭐ Feature</button>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <div class="featured-item-text">"When should I use recursion vs a regular loop?"</div>
+                            <div class="featured-item-meta">
+                                Robin Taylor • 12 upvotes
+                                <button class="feature-btn" onclick="featureQuestion(this)">⭐ Feature</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Spark Question -->
+                <div class="dashboard-card">
+                    <h2>✨ Create Spark Question</h2>
+                    <div class="create-spark-form">
+                        <input type="text" placeholder="Text to highlight in content (e.g., 'a function calls itself')">
+                        <textarea placeholder="Write a question that prompts reflection or application of the concept..."></textarea>
+                        <div style="display: flex; gap: 8px; align-items: center; font-size: 13px; color: #666;">
+                            <input type="checkbox" id="includeVideo">
+                            <label for="includeVideo">Include video explanation</label>
+                        </div>
+                        <button onclick="createSparkQuestion()">Add Spark Question</button>
+                    </div>
+                </div>
+
+                <!-- Create Teaching Moment -->
+                <div class="dashboard-card">
+                    <h2>📢 Create Teaching Moment</h2>
+                    <div class="create-teaching-form">
+                        <input type="text" placeholder="Title (e.g., 'Common Mistake: Forgetting Base Case')">
+                        <textarea placeholder="Address a common misconception or provide additional clarification based on what you're seeing..."></textarea>
+                        <button onclick="createTeachingMoment()">Post Teaching Moment</button>
+                    </div>
+                </div>
+
+                <!-- Engagement Stats -->
+                <div class="dashboard-card" style="grid-column: span 2;">
+                    <h2>📊 Engagement Overview</h2>
+                    <div style="display: flex; gap: 32px; padding: 16px 0;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #4361ee;">73%</div>
+                            <div style="color: #666; font-size: 14px;">Students with notes</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #28a745;">89%</div>
+                            <div style="color: #666; font-size: 14px;">Answered Spark Questions</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #e91e63;">156</div>
+                            <div style="color: #666; font-size: 14px;">Shared notes this week</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #ff9800;">42</div>
+                            <div style="color: #666; font-size: 14px;">Peer replies</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #9c27b0;">8</div>
+                            <div style="color: #666; font-size: 14px;">Top peer teachers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Highlight Tooltip -->
+    <div class="highlight-tooltip" id="highlightTooltip">
+        <div class="highlight-tooltip-actions">
+            <button class="add-note-btn" onclick="addNoteFromHighlight()">+ Add Note</button>
+            <div class="highlight-tooltip-divider"></div>
+            <div class="highlight-reactions">
+                <button class="highlight-reaction" onclick="reactToContent('insightful')" title="Insightful">💡</button>
+                <button class="highlight-reaction" onclick="reactToContent('unclear')" title="Unclear">❓</button>
+                <button class="highlight-reaction" onclick="reactToContent('revisit')" title="Revisit">🔖</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Spark Question Data
+        const sparkQuestions = {
+            1: {
+                text: "Before reading further, try to think of a real-world example of recursion. What everyday process involves repeating the same steps on a smaller scale?",
+                context: "a function calls itself",
+                hasVideo: true,
+                responseCount: 23
+            },
+            2: {
+                text: "What would happen if we removed the base case from a recursive function? Try to predict before testing it.",
+                context: "function stops calling itself",
+                hasVideo: false,
+                responseCount: 19
+            },
+            3: {
+                text: "Can you think of a scenario where a recursive call might NOT make progress toward the base case? What would happen?",
+                context: "make progress toward the base case",
+                hasVideo: true,
+                responseCount: 15
+            }
+        };
+
+        let activeSparkId = null;
+
+        // Show Spark Question in right panel
+        function showSparkQuestion(sparkId) {
+            const spark = sparkQuestions[sparkId];
+            if (!spark) return;
+
+            // Remove active state from other highlights
+            document.querySelectorAll('.spark-highlight').forEach(el => el.classList.remove('active'));
+
+            // Add active state to clicked highlight
+            document.querySelector(`[data-spark="${sparkId}"]`).classList.add('active');
+
+            // Update spark card content
+            document.getElementById('sparkQuestionText').textContent = spark.text;
+            document.getElementById('sparkContext').textContent = `"${spark.context}"`;
+            document.getElementById('sparkResponseCount').textContent = spark.responseCount;
+
+            // Show/hide video option
+            document.getElementById('sparkVideo').style.display = spark.hasVideo ? 'block' : 'none';
+
+            // Show the spark card
+            document.getElementById('sparkCard').style.display = 'block';
+
+            // Scroll to top of notebook content
+            document.getElementById('notebookContent').scrollTop = 0;
+
+            activeSparkId = sparkId;
+        }
+
+        function hideSparkQuestion() {
+            document.getElementById('sparkCard').style.display = 'none';
+            document.querySelectorAll('.spark-highlight').forEach(el => el.classList.remove('active'));
+            activeSparkId = null;
+        }
+
+        function answerSparkQuestion() {
+            const answer = prompt('Write your answer:');
+            if (answer) {
+                alert('Your answer has been submitted! You can now see how others answered.');
+                // In real app, would add to responses and show them
+            }
+        }
+
+        function viewSparkResponses() {
+            alert('Peer responses:\n\n' +
+                '🧑 Alex: "Russian nesting dolls - each one contains a smaller version until you reach the solid one!"\n\n' +
+                '👩 Maria: "Looking up a word in a dictionary - sometimes the definition uses another word you need to look up, and so on..."\n\n' +
+                '🧑 Tyler: "Mirrors facing each other - infinite reflections getting smaller!"');
+        }
+
+        function playSparkVideo() {
+            alert('Playing video explanation from Dr. Smith (45 seconds)...\n\n[Video would play here in the actual implementation]');
+        }
+
+        // Vote on notes (upvote/downvote)
+        function vote(btn, direction) {
+            const controls = btn.closest('.vote-controls');
+            const countEl = controls.querySelector('.vote-count');
+            const upBtn = controls.querySelector('.upvote');
+            const downBtn = controls.querySelector('.downvote');
+            let count = parseInt(countEl.textContent);
+
+            if (direction === 'up') {
+                if (upBtn.classList.contains('active')) {
+                    upBtn.classList.remove('active');
+                    count--;
+                } else {
+                    upBtn.classList.add('active');
+                    count++;
+                    if (downBtn.classList.contains('active')) {
+                        downBtn.classList.remove('active');
+                        count++;
+                    }
+                }
+            } else {
+                if (downBtn.classList.contains('active')) {
+                    downBtn.classList.remove('active');
+                    count++;
+                } else {
+                    downBtn.classList.add('active');
+                    count--;
+                    if (upBtn.classList.contains('active')) {
+                        upBtn.classList.remove('active');
+                        count--;
+                    }
+                }
+            }
+
+            countEl.textContent = count;
+        }
+
+        // React to content from tooltip
+        function reactToContent(type) {
+            const btn = event.target;
+            btn.classList.toggle('selected');
+
+            // Visual feedback
+            btn.style.transform = 'scale(1.3)';
+            setTimeout(() => btn.style.transform = '', 200);
+
+            // Get the selected text and determine section
+            const selectedText = window.selectedText || 'Selected content';
+            const section = getContentSection();
+
+            // Add to user reactions
+            userReactions.unshift({
+                type: type,
+                text: selectedText,
+                section: section,
+                timestamp: 'Just now'
+            });
+
+            // Feedback messages for each reaction type
+            const messages = {
+                insightful: 'Marked as insightful - added to My Notes!',
+                unclear: 'Marked as unclear - added to My Notes!',
+                revisit: 'Bookmarked to revisit - added to My Notes!'
+            };
+
+            // Hide tooltip after reaction
+            setTimeout(() => {
+                document.getElementById('highlightTooltip').style.display = 'none';
+            }, 300);
+
+            // Brief visual confirmation
+            showToast(messages[type]);
+        }
+
+        // Helper to determine which section the selection is in
+        function getContentSection() {
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return 'Content';
+
+            let node = selection.anchorNode;
+            while (node && !node.classList?.contains('content-section')) {
+                node = node.parentNode;
+            }
+
+            if (node) {
+                const h2 = node.querySelector('h2');
+                if (h2) return h2.textContent;
+            }
+
+            return 'Content';
+        }
+
+        // Simple toast notification
+        function showToast(message) {
+            // Remove existing toast if any
+            const existing = document.querySelector('.toast-notification');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #1a1a2e;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 1000;
+                animation: fadeInUp 0.3s ease;
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // View toggle (Learner vs Instructor)
+        function setView(view) {
+            const container = document.getElementById('mainContainer');
+            const btns = document.querySelectorAll('.view-btn');
+
+            btns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (view === 'instructor') {
+                container.classList.add('instructor-view');
+            } else {
+                container.classList.remove('instructor-view');
+            }
+        }
+
+        // Store user reactions
+        let userReactions = [
+            { type: 'revisit', text: 'a function calls itself to solve a problem', section: 'What is Recursion?', timestamp: '2 hours ago' },
+            { type: 'unclear', text: 'a condition where the function stops calling itself', section: 'The Base Case', timestamp: '1 hour ago' },
+            { type: 'insightful', text: 'Each recursive call should make progress toward the base case', section: 'The Recursive Case', timestamp: '30 min ago' }
+        ];
+
+        let currentTab = 'activity';
+        let currentFilter = 'all';
+        let originalActivityContent = '';
+
+        // Save original activity content on load
+        document.addEventListener('DOMContentLoaded', function() {
+            originalActivityContent = document.getElementById('notebookContent').innerHTML;
+        });
+
+        // Notebook tab toggle
+        function setTab(tab) {
+            currentTab = tab;
+            const tabs = document.querySelectorAll('.notebook-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            renderNotebookContent();
+        }
+
+        function renderNotebookContent() {
+            const content = document.getElementById('notebookContent');
+            const searchTerm = document.getElementById('notebookSearch').value.toLowerCase();
+
+            if (currentTab === 'mine') {
+                let html = '';
+
+                // Section for reactions
+                const filteredReactions = userReactions.filter(r => {
+                    const matchesFilter = currentFilter === 'all' || currentFilter === r.type;
+                    const matchesSearch = !searchTerm || r.text.toLowerCase().includes(searchTerm) || r.section.toLowerCase().includes(searchTerm);
+                    return matchesFilter && matchesSearch;
+                });
+
+                if (filteredReactions.length > 0) {
+                    html += '<div class="notebook-section-divider">Reactions</div>';
+                    filteredReactions.forEach((reaction, index) => {
+                        const icons = { insightful: '💡', unclear: '❓', revisit: '🔖' };
+                        const labels = { insightful: 'Insightful', unclear: 'Unclear', revisit: 'Revisit' };
+                        html += `
+                            <div class="reaction-card" data-type="${reaction.type}">
+                                <div class="reaction-card-icon ${reaction.type}">${icons[reaction.type]}</div>
+                                <div class="reaction-card-content">
+                                    <div class="reaction-card-text">"${reaction.text}"</div>
+                                    <div class="reaction-card-meta">${labels[reaction.type]} · ${reaction.section} · ${reaction.timestamp}</div>
+                                </div>
+                                <span class="reaction-card-remove" onclick="removeReaction(${index})">×</span>
+                            </div>
+                        `;
+                    });
+                }
+
+                // Section for notes (only show if filter is 'all' or 'notes')
+                if (currentFilter === 'all' || currentFilter === 'notes') {
+                    const note1Matches = !searchTerm || 'base case triggers fuzzy review'.includes(searchTerm);
+                    const note2Matches = !searchTerm || 'inception movie dreams function calls'.includes(searchTerm);
+
+                    if (note1Matches || note2Matches) {
+                        html += '<div class="notebook-section-divider">Notes</div>';
+
+                        if (note1Matches) {
+                            html += `
+                                <div class="note-card" data-type="note">
+                                    <div class="note-header">
+                                        <div class="note-avatar" style="background: #4caf50;">You</div>
+                                        <div class="note-meta">
+                                            <div class="note-author">Your Note</div>
+                                            <div class="note-context">on "The Base Case"</div>
+                                        </div>
+                                        <span class="note-visibility private">Private</span>
+                                    </div>
+                                    <div class="note-body">Need to review this section again - still a bit fuzzy on when exactly the base case triggers.</div>
+                                    <div class="note-actions">
+                                        <span class="note-action">✏️ Edit</span>
+                                        <span class="note-action">🔗 Share</span>
+                                        <span class="note-action">🗑️ Delete</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        if (note2Matches) {
+                            html += `
+                                <div class="note-card" data-type="note">
+                                    <div class="note-header">
+                                        <div class="note-avatar" style="background: #4caf50;">You</div>
+                                        <div class="note-meta">
+                                            <div class="note-author">Your Note</div>
+                                            <div class="note-context">on "What is Recursion?"</div>
+                                        </div>
+                                        <span class="note-visibility">Shared</span>
+                                    </div>
+                                    <div class="note-highlight">"a function calls itself"</div>
+                                    <div class="note-body">This is like the Inception movie - dreams within dreams within dreams!</div>
+                                    <div class="note-actions">
+                                        <span class="note-action">✏️ Edit</span>
+                                        <span class="note-action">🗑️ Delete</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+
+                if (!html) {
+                    html = '<div style="text-align: center; color: #999; padding: 40px 20px;">No items match your filter</div>';
+                }
+
+                content.innerHTML = html;
+            } else {
+                // Activity tab - restore original content
+                if (originalActivityContent) {
+                    content.innerHTML = originalActivityContent;
+                }
+            }
+        }
+
+        function removeReaction(index) {
+            userReactions.splice(index, 1);
+            renderNotebookContent();
+        }
+
+        // Search functionality
+        function handleSearch(term) {
+            if (currentTab === 'mine') {
+                renderNotebookContent();
+            }
+            // For activity tab, would filter in real app
+        }
+
+        // Filter functionality
+        function toggleFilterMenu() {
+            const menu = document.getElementById('filterMenu');
+            menu.classList.toggle('show');
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+
+            // Update UI
+            document.querySelectorAll('.filter-option').forEach(opt => opt.classList.remove('selected'));
+            event.target.classList.add('selected');
+
+            // Update button state
+            const btn = document.querySelector('.filter-btn');
+            if (filter === 'all') {
+                btn.classList.remove('active');
+            } else {
+                btn.classList.add('active');
+            }
+
+            // Close menu
+            document.getElementById('filterMenu').classList.remove('show');
+
+            // Re-render content
+            renderNotebookContent();
+        }
+
+        // Close filter menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.filter-dropdown')) {
+                const menu = document.getElementById('filterMenu');
+                if (menu) menu.classList.remove('show');
+            }
+        });
+
+        // Toggle note visibility
+        function toggleVisibility(el) {
+            el.classList.toggle('active');
+        }
+
+        // Text selection for highlighting
+        document.getElementById('contentPanel').addEventListener('mouseup', function(e) {
+            // Don't show tooltip if clicking on a spark highlight
+            if (e.target.classList.contains('spark-highlight')) return;
+
+            const selection = window.getSelection();
+            const text = selection.toString().trim();
+
+            if (text.length > 0 && text.length < 200) {
+                const tooltip = document.getElementById('highlightTooltip');
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+
+                tooltip.style.display = 'block';
+                tooltip.style.top = (rect.top + window.scrollY - 45) + 'px';
+                tooltip.style.left = (rect.left + rect.width/2 - 80) + 'px';
+
+                window.selectedText = text;
+            }
+        });
+
+        document.addEventListener('mousedown', function(e) {
+            if (!e.target.closest('.highlight-tooltip')) {
+                document.getElementById('highlightTooltip').style.display = 'none';
+            }
+        });
+
+        function addNoteFromHighlight() {
+            const highlight = document.getElementById('composerHighlight');
+            const highlightText = document.getElementById('highlightText');
+
+            highlight.classList.add('active');
+            highlightText.textContent = window.selectedText;
+            document.getElementById('highlightTooltip').style.display = 'none';
+
+            document.querySelector('.composer-textarea').focus();
+        }
+
+        // Instructor dashboard functions
+        function jumpToSection(sectionNum) {
+            setView('learner');
+            document.querySelectorAll('.view-btn')[0].classList.add('active');
+            document.querySelectorAll('.view-btn')[1].classList.remove('active');
+            document.getElementById('mainContainer').classList.remove('instructor-view');
+
+            setTimeout(() => {
+                const section = document.querySelector(`[data-section="${sectionNum}"]`);
+                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                section.style.background = '#fff3cd';
+                setTimeout(() => section.style.background = '', 2000);
+            }, 100);
+        }
+
+        function featureQuestion(btn) {
+            btn.textContent = '✓ Featured';
+            btn.style.background = '#28a745';
+            btn.disabled = true;
+            alert('Question featured! It will now appear at the top of the activity feed.');
+        }
+
+        function createSparkQuestion() {
+            alert('Spark Question created! The text you specified will now be highlighted in the content, and students will see your question when they hover and click on it.');
+        }
+
+        function createTeachingMoment() {
+            alert('Teaching Moment posted! All students will see this highlighted in the content.');
+        }
+    </script>
+</body>
+</html>
