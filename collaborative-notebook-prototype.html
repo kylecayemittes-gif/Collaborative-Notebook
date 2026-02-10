@@ -57,6 +57,11 @@
             background: rgba(255,255,255,0.1);
         }
 
+        .view-btn:focus {
+            outline: 2px solid rgba(255,255,255,0.5);
+            outline-offset: 2px;
+        }
+
         .view-btn.active {
             background: #4361ee;
             border-color: #4361ee;
@@ -72,47 +77,54 @@
         /* Learning Content Panel */
         .content-panel {
             flex: 1;
-            padding: 32px 48px;
+            padding: 40px 56px;
             overflow-y: auto;
             background: white;
             position: relative;
         }
 
         .content-panel h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
+            font-size: 32px;
+            margin-bottom: 12px;
             color: #1a1a2e;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .content-meta {
             color: #666;
             font-size: 14px;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
             border-bottom: 1px solid #eee;
         }
 
         .content-section {
             position: relative;
-            margin-bottom: 24px;
-            padding: 16px;
-            border-radius: 8px;
-            transition: background 0.2s;
+            margin-bottom: 40px;
+            padding: 28px 24px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            background: white;
         }
 
         .content-section:hover {
             background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .content-section p {
-            line-height: 1.7;
+            line-height: 1.75;
             font-size: 16px;
+            margin-bottom: 16px;
         }
 
         .content-section h2 {
-            font-size: 20px;
-            margin-bottom: 12px;
+            font-size: 24px;
+            margin-bottom: 16px;
             color: #1a1a2e;
+            font-weight: 600;
+            letter-spacing: -0.01em;
         }
 
         /* Confusion Heatmap Overlay */
@@ -121,83 +133,274 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 4px;
-            border-radius: 2px;
+            width: 6px;
+            border-radius: 3px;
             opacity: 0;
             transition: opacity 0.3s;
+            box-shadow: 0 0 8px rgba(0,0,0,0.15);
         }
 
         .instructor-view .heatmap-bar {
             opacity: 1;
         }
 
-        .heatmap-low { background: #28a745; }
-        .heatmap-medium { background: #ffc107; }
-        .heatmap-high { background: #dc3545; }
+        .heatmap-low { background: #4caf50; }
+        .heatmap-medium { background: #ff9800; }
+        .heatmap-high { background: #f44336; }
 
-        /* Spark Highlight - Subtle inline highlight for instructor questions */
-        .spark-highlight {
-            position: relative;
-            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.15) 60%);
-            border-radius: 2px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .spark-highlight:hover {
-            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.3) 60%);
-        }
-
-        /* Spark icon that appears on hover */
-        .spark-highlight::after {
-            content: "✨";
+        /* Real-time collaboration indicators */
+        .collaboration-indicator {
             position: absolute;
-            right: -24px;
-            top: 50%;
-            transform: translateY(-50%) scale(0);
-            font-size: 16px;
-            opacity: 0;
-            transition: all 0.2s;
-        }
-
-        .spark-highlight:hover::after {
-            transform: translateY(-50%) scale(1);
-            opacity: 1;
-        }
-
-        /* Active state when spark question is shown */
-        .spark-highlight.active {
-            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.4) 60%);
-        }
-
-        .spark-highlight.active::after {
-            transform: translateY(-50%) scale(1);
-            opacity: 1;
-        }
-
-        /* Teaching Moment */
-        .teaching-moment {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 16px 20px;
-            border-radius: 0 12px 12px 0;
-            margin: 20px 0;
-        }
-
-        .teaching-moment-header {
+            top: 12px;
+            right: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 600;
-            color: #856404;
-            margin-bottom: 8px;
-            font-size: 14px;
+            background: rgba(255,255,255,0.95);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #666;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease;
+            z-index: 10;
         }
 
-        .teaching-moment p {
-            color: #856404;
-            font-size: 15px;
+        .collaboration-indicator .presence-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+            animation: pulse 2s infinite;
+        }
+
+        .collaboration-indicator .presence-dot.away {
+            background: #999;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Smart suggestions - Inline hover state */
+        .smart-suggestion {
+            position: relative;
+            display: inline;
+        }
+
+        .smart-suggestion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.15) 60%);
+            color: #667eea;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        .smart-suggestion-badge:hover {
+            background: linear-gradient(to bottom, transparent 60%, rgba(102, 126, 234, 0.3) 60%);
+            transform: scale(1.05);
+        }
+
+        .smart-suggestion-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
             line-height: 1.5;
+            min-width: 200px;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(4px);
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .smart-suggestion-badge:hover + .smart-suggestion-tooltip,
+        .smart-suggestion-tooltip:hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .smart-suggestion-tooltip-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .smart-suggestion-tooltip-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Spark Highlight - Prominent educator question cue */
+        .spark-highlight {
+            position: relative;
+            background: linear-gradient(to bottom, transparent 50%, rgba(67, 97, 238, 0.28) 50%);
+            border-left: 3px solid #4361ee;
+            border-radius: 0 4px 4px 0;
+            padding: 2px 4px 2px 6px;
+            margin: 0 -2px 0 -6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0 0 1px rgba(67, 97, 238, 0.12);
+        }
+
+        .spark-highlight:hover {
+            background: linear-gradient(to bottom, transparent 40%, rgba(67, 97, 238, 0.35) 40%);
+            box-shadow: 0 0 0 1px rgba(67, 97, 238, 0.2);
+        }
+
+        /* Educator question icon - always visible */
+        .spark-highlight::before {
+            content: "✨";
+            position: absolute;
+            right: -26px;
+            top: 50%;
+            transform: translateY(-50%) scale(0.85);
+            font-size: 14px;
+            opacity: 0.9;
+            transition: all 0.2s;
+            pointer-events: none;
+        }
+
+        .spark-highlight:hover::before {
+            transform: translateY(-50%) scale(1.1) rotate(10deg);
+            opacity: 1;
+        }
+
+        .spark-highlight.active {
+            background: linear-gradient(to bottom, transparent 40%, rgba(67, 97, 238, 0.4) 40%);
+            animation: sparklePulse 0.6s ease;
+        }
+
+        .spark-highlight.active::before {
+            transform: translateY(-50%) scale(1.2) rotate(15deg);
+            opacity: 1;
+            animation: sparkle 0.6s ease;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                opacity: 1; 
+                transform: translateY(-50%) scale(1.2) rotate(15deg);
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: translateY(-50%) scale(1.4) rotate(25deg);
+            }
+        }
+
+        @keyframes sparklePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Teaching Moment - Inline hover state, clickable */
+        .teaching-moment {
+            position: relative;
+            display: inline;
+        }
+
+        .teaching-moment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: linear-gradient(to bottom, transparent 60%, rgba(255, 193, 7, 0.2) 60%);
+            color: #f57c00;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        .teaching-moment-badge:hover {
+            background: linear-gradient(to bottom, transparent 60%, rgba(255, 193, 7, 0.35) 60%);
+            transform: scale(1.05);
+        }
+
+        .teaching-moment-badge:active {
+            transform: scale(0.95);
+        }
+
+        .teaching-moment-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 8px;
+            background: #fff8e1;
+            border-left: 3px solid #f57c00;
+            color: #5d4037;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            min-width: 250px;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(4px);
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .teaching-moment-badge:hover + .teaching-moment-tooltip,
+        .teaching-moment-tooltip:hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .teaching-moment-tooltip-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: #e65100;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .teaching-moment-tooltip p {
+            color: #5d4037;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0;
         }
 
         /* Notebook Panel */
@@ -210,7 +413,7 @@
         }
 
         .notebook-header {
-            padding: 16px 20px;
+            padding: 20px 24px;
             border-bottom: 1px solid #e0e0e0;
             background: white;
         }
@@ -218,7 +421,7 @@
         .notebook-tabs {
             display: flex;
             gap: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         /* Search and Filter */
@@ -319,6 +522,17 @@
         .filter-option:first-child {
             border-radius: 8px 8px 0 0;
         }
+        .filter-option-divider {
+            cursor: default;
+            font-size: 11px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .filter-option-divider:hover {
+            background: #f8f9fa;
+        }
 
         .filter-option:last-child {
             border-radius: 0 0 8px 8px;
@@ -332,24 +546,30 @@
         /* Reaction card in My Notes */
         .reaction-card {
             background: white;
-            border-radius: 10px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.06);
             border: 1px solid #eee;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 14px;
+            transition: all 0.2s;
+        }
+
+        .reaction-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
         }
 
         .reaction-card-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
             flex-shrink: 0;
         }
 
@@ -371,26 +591,34 @@
         }
 
         .reaction-card-text {
-            font-size: 13px;
+            font-size: 14px;
             color: #333;
-            line-height: 1.4;
-            margin-bottom: 4px;
+            line-height: 1.5;
+            margin-bottom: 6px;
         }
 
         .reaction-card-meta {
-            font-size: 11px;
+            font-size: 12px;
             color: #999;
         }
 
         .reaction-card-remove {
             color: #ccc;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             padding: 4px;
+            transition: all 0.2s;
+            border-radius: 4px;
         }
 
         .reaction-card-remove:hover {
             color: #999;
+            background: #f0f0f0;
+        }
+
+        .reaction-card-remove:focus {
+            outline: 2px solid #4361ee;
+            outline-offset: 2px;
         }
 
         .notebook-tab {
@@ -416,7 +644,7 @@
         .notebook-content {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 20px;
         }
 
         /* Spark Question Card - appears in right panel */
@@ -547,10 +775,17 @@
         .note-card {
             background: white;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             border: 1px solid #eee;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .note-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
         }
 
         .note-card.featured {
@@ -559,24 +794,75 @@
         }
 
         .note-card.featured::before {
-            content: "Featured by Instructor";
+            content: "Featured by Educator";
             display: block;
             font-size: 11px;
             color: #4361ee;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Note connections visualization */
+        .note-connections {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .connection-badge {
+            background: #f0f4ff;
+            color: #4361ee;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e0e7ff;
+        }
+
+        .connection-badge:hover {
+            background: #e0e7ff;
+            transform: scale(1.05);
+        }
+
+        /* Presence indicator on avatars */
+        .note-avatar {
+            position: relative;
+        }
+
+        .note-avatar::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+
+        .note-avatar.away::after {
+            background: #999;
+            animation: none;
         }
 
         .note-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
         .note-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #4361ee;
             color: white;
@@ -585,6 +871,7 @@
             justify-content: center;
             font-size: 14px;
             font-weight: 600;
+            position: relative;
         }
 
         .note-meta {
@@ -616,25 +903,27 @@
 
         .note-body {
             font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 12px;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            color: #333;
         }
 
         .note-highlight {
             background: #fff3cd;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 8px;
             font-size: 13px;
             font-style: italic;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             border-left: 3px solid #ffc107;
+            color: #856404;
         }
 
         .note-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding-top: 12px;
+            gap: 14px;
+            padding-top: 14px;
             border-top: 1px solid #eee;
         }
 
@@ -646,12 +935,12 @@
         }
 
         .vote-btn {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border: none;
             background: transparent;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -662,6 +951,12 @@
 
         .vote-btn:hover {
             background: #f0f0f0;
+            transform: scale(1.1);
+        }
+
+        .vote-btn:focus {
+            outline: 2px solid #4361ee;
+            outline-offset: 2px;
         }
 
         .vote-btn.upvote:hover,
@@ -691,60 +986,151 @@
             font-size: 13px;
             color: #666;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background 0.2s;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
 
         .note-action:hover {
             background: #f0f0f0;
+            color: #4361ee;
+        }
+
+        .note-action:focus {
+            outline: 2px solid #4361ee;
+            outline-offset: 2px;
         }
 
         .note-action.active {
             color: #4361ee;
+            font-weight: 500;
         }
 
         /* New Note Composer */
         .note-composer {
-            padding: 16px;
+            padding: 20px;
             border-top: 1px solid #e0e0e0;
             background: white;
         }
 
         .composer-highlight {
             background: #fff3cd;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 8px;
             font-size: 13px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: none;
+            border-left: 3px solid #ffc107;
+            animation: slideInUp 0.3s ease;
         }
 
         .composer-highlight.active {
             display: block;
         }
 
+        .composer-scope {
+            background: #e8f4fd;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #2196f3;
+        }
+        .composer-context-row {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .composer-context-label {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+        .composer-context-select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            min-width: 160px;
+        }
+        .composer-attach-row {
+            margin-top: 8px;
+        }
+        .composer-attach-label {
+            cursor: pointer;
+            font-size: 13px;
+            color: #666;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .composer-file-input {
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+        .composer-attach-btn {
+            color: #4361ee;
+        }
+        .composer-attach-filename {
+            font-size: 12px;
+            color: #999;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .composer-writing-wrap {
+            position: relative;
+        }
+        .composer-writing-indicator,
+        .reply-writing-indicator {
+            display: none;
+            font-size: 12px;
+            color: #4361ee;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .composer-writing-wrap:focus-within .composer-writing-indicator,
+        .reply-composer:focus-within .reply-writing-indicator {
+            display: block;
+        }
+        .educator-writing-indicator {
+            display: none;
+            font-size: 12px;
+            color: #4361ee;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .educator-writing-form:focus-within .educator-writing-indicator {
+            display: block;
+        }
         .composer-textarea {
             width: 100%;
-            min-height: 80px;
-            padding: 12px;
+            min-height: 90px;
+            padding: 14px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
             resize: none;
             font-family: inherit;
+            transition: all 0.2s;
+            line-height: 1.5;
         }
 
         .composer-textarea:focus {
             outline: none;
             border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
         }
 
         .composer-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 12px;
+            margin-top: 14px;
         }
 
         .visibility-toggle {
@@ -799,9 +1185,30 @@
 
         .post-btn:hover {
             background: #3651d4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
         }
 
-        /* Instructor Dashboard */
+        .post-btn:active {
+            transform: translateY(0);
+        }
+
+        .post-btn:focus {
+            outline: 2px solid #4361ee;
+            outline-offset: 2px;
+        }
+
+        .post-btn.success {
+            background: #4caf50;
+            animation: successPulse 0.6s ease;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Educator Dashboard */
         .instructor-dashboard {
             display: none;
             padding: 32px;
@@ -897,6 +1304,15 @@
             color: #666;
         }
 
+        .heatmap-breakdown {
+            font-size: 12px;
+            color: #555;
+            white-space: nowrap;
+        }
+        .heatmap-dot {
+            margin-right: 6px;
+        }
+
         /* Featured Questions List */
         .featured-list {
             display: flex;
@@ -911,6 +1327,24 @@
             border-left: 3px solid #4361ee;
         }
 
+        .contribution-type {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+        .contribution-type.question {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .contribution-type.comment {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
         .featured-item-text {
             font-size: 14px;
             margin-bottom: 8px;
@@ -921,6 +1355,54 @@
             color: #666;
         }
 
+        .dashboard-card-desc {
+            font-size: 13px;
+            color: #666;
+            margin: -8px 0 14px 0;
+        }
+        .prompt-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .prompt-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #444;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .prompt-input, .prompt-textarea, .prompt-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .prompt-textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .prompt-row {
+            display: flex;
+            gap: 16px;
+        }
+        .prompt-field {
+            flex: 1;
+        }
+        .prompt-submit-btn {
+            padding: 10px 16px;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+        .prompt-submit-btn:hover {
+            background: #3651d4;
+        }
         .feature-btn {
             padding: 4px 12px;
             background: #4361ee;
@@ -930,6 +1412,46 @@
             cursor: pointer;
             font-size: 12px;
             margin-left: 8px;
+        }
+
+        /* Pick from content (Spark + Teaching Moment) */
+        .pick-from-content-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .pick-label {
+            font-size: 13px;
+            color: #555;
+            font-weight: 500;
+        }
+        .pick-from-content-btn {
+            align-self: flex-start;
+            padding: 8px 14px;
+            background: #e0e7ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .pick-from-content-btn:hover {
+            background: #c7d2fe;
+        }
+        .pick-preview {
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .pick-preview.has-value {
+            font-style: normal;
+            color: #1a1a2e;
+            white-space: normal;
         }
 
         /* Create Spark Question Form */
@@ -952,6 +1474,11 @@
         .create-spark-form textarea {
             min-height: 80px;
             resize: none;
+        }
+
+        .create-spark-form .input-url,
+        .create-teaching-form .input-url {
+            width: 100%;
         }
 
         .create-spark-form button {
@@ -996,6 +1523,40 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
+        }
+
+        /* Individual Learner Analytics */
+        .student-analytics-wrap {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+        .student-analytics-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .student-analytics-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #f8f9fa;
+            color: #555;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        .student-analytics-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .student-analytics-table tr:hover td {
+            background: #f8fafc;
+        }
+        .student-analytics-table .student-name {
+            font-weight: 500;
+            color: #1a1a2e;
+        }
+        .student-analytics-table .num {
+            text-align: center;
         }
 
         /* Highlight Selection */
@@ -1124,15 +1685,664 @@
             height: 1px;
             background: #e0e0e0;
         }
+
+        /* Toast notifications */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: fadeInUp 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Connection visualization modal */
+        .connection-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .connection-modal.show {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .connection-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: slideInUp 0.3s ease;
+        }
+
+        .connection-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .connection-modal-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .connection-modal-close {
+            background: #f0f0f0;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .connection-modal-close:hover {
+            background: #e0e0e0;
+            transform: rotate(90deg);
+        }
+
+        .connection-modal-close:focus {
+            outline: 2px solid #4361ee;
+            outline-offset: 2px;
+        }
+
+        .connection-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .connection-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 3px solid #4361ee;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .connection-item:hover {
+            background: #f0f0f0;
+            transform: translateX(4px);
+        }
+
+        .connection-item-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .connection-item-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .connection-item-meta {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        /* Inline reaction indicators on content */
+        .content-reaction-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 6px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 6px;
+            cursor: pointer;
+            vertical-align: middle;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .content-reaction-indicator:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: scale(1.05);
+        }
+
+        .content-reaction-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 220px;
+            max-width: 300px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(4px);
+            transition: all 0.2s;
+        }
+
+        .content-reaction-indicator:hover .content-reaction-popup {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .reaction-popup-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .reaction-popup-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .reaction-popup-item:last-child {
+            border-bottom: none;
+        }
+
+        .reaction-popup-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #4361ee;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .reaction-popup-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .reaction-popup-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .reaction-popup-text {
+            font-size: 11px;
+            color: #666;
+            font-style: italic;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .reaction-popup-icon {
+            font-size: 14px;
+        }
+
+        /* Share options dropdown */
+        .share-dropdown {
+            position: relative;
+        }
+
+        .share-dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 200px;
+            z-index: 100;
+            display: none;
+        }
+
+        .share-dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .share-option {
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .share-option:hover {
+            background: #f8f9fa;
+        }
+
+        .share-option.selected {
+            background: #f0f4ff;
+            color: #4361ee;
+        }
+
+        .share-option-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .share-option-content {
+            flex: 1;
+        }
+
+        .share-option-title {
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .share-option-subtitle {
+            font-size: 11px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .share-option-check {
+            color: #4361ee;
+            font-size: 14px;
+        }
+
+        .student-selector {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 8px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+
+        .student-option {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.15s;
+        }
+
+        .student-option:hover {
+            background: #f8f9fa;
+        }
+
+        .student-option input[type="checkbox"] {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .student-option-label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .student-option-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #4361ee;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Threaded replies */
+        .reply-thread {
+            margin-left: 24px;
+            margin-top: 12px;
+            border-left: 2px solid #e0e0e0;
+            padding-left: 16px;
+        }
+
+        .reply-composer {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .reply-composer.active {
+            display: block;
+        }
+
+        .reply-composer textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            resize: vertical;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .reply-composer textarea:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+
+        .reply-composer-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .reply-btn {
+            padding: 6px 12px;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .reply-btn:hover {
+            background: #3a52d4;
+        }
+
+        .cancel-reply-btn {
+            padding: 6px 12px;
+            background: transparent;
+            color: #666;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .cancel-reply-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .toggle-replies {
+            color: #4361ee;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .toggle-replies:hover {
+            text-decoration: underline;
+        }
+
+        /* Moderation tools */
+        .note-moderation {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .moderation-btn {
+            padding: 4px 8px;
+            font-size: 11px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #f0f0f0;
+            color: #666;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .moderation-btn:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .moderation-btn.pinned {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .moderation-btn.hidden {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .moderation-btn.locked {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .note-card.pinned {
+            border-left: 4px solid #ffc107;
+            background: #fffbf0;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+        }
+
+        .note-card.hidden {
+            opacity: 0.6;
+            background: #f8f8f8;
+        }
+
+        .note-card.locked .note-action[aria-label*="Reply"],
+        .note-card.locked .note-action[onclick*="showReplyComposer"] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .note-card.locked::after {
+            content: "🔒 Locked";
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Educator message styling - colors/shading for visibility without heavy triage UI */
+        .note-card.instructor-message {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            border-left: 4px solid #4361ee;
+            box-shadow: 0 1px 3px rgba(67, 97, 238, 0.12);
+        }
+        .note-card.instructor-message .note-author {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        .note-card.instructor-message .note-meta .note-context {
+            color: #4338ca;
+        }
+        .instructor-badge {
+            background: #4361ee;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 4px;
+        }
+        /* Post context badges (discussion feed) */
+        .post-context-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+        .post-context-badge.question { background: #e3f2fd; color: #1565c0; }
+        .post-context-badge.resource { background: #e8f5e9; color: #2e7d32; }
+        .post-context-badge.reflection { background: #fff3e0; color: #e65100; }
+        .post-context-badge.assignment { background: #f3e5f5; color: #7b1fa2; }
+        .post-context-badge.general { background: #eceff1; color: #455a64; }
+        .note-attachment {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            padding: 6px 0;
+        }
+
+        /* Q&A Mode for Spark Questions */
+        .spark-card.qa-mode {
+            border-left: 4px solid #28a745;
+        }
+
+        .qa-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .qa-status.unanswered {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .qa-status.answered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .qa-status.resolved {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .best-answer-badge {
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+
+        .mark-answered-btn {
+            padding: 6px 12px;
+            font-size: 11px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .mark-answered-btn:hover {
+            background: #218838;
+        }
+
+        .qa-toggle {
+            padding: 4px 8px;
+            font-size: 11px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+
+        .qa-toggle:hover {
+            background: #e0e0e0;
+        }
+
+        .qa-toggle.active {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        /* Report/Flag */
+        .report-btn {
+            color: #dc3545;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .report-btn:hover {
+            background: #f8d7da;
+        }
     </style>
 </head>
 <body>
     <!-- Top Navigation -->
-    <nav class="top-nav">
+    <nav class="top-nav" role="navigation" aria-label="Main navigation">
         <div class="logo">Canvas Career</div>
-        <div class="view-toggle">
-            <button class="view-btn active" onclick="setView('learner')">Learner View</button>
-            <button class="view-btn" onclick="setView('instructor')">Instructor Dashboard</button>
+        <div class="view-toggle" role="tablist">
+            <button class="view-btn active" onclick="setView('learner')" role="tab" aria-selected="true" aria-label="Switch to learner view">Learner View</button>
+            <button class="view-btn" onclick="setView('instructor')" role="tab" aria-selected="false" aria-label="Switch to educator dashboard">Educator Dashboard</button>
         </div>
     </nav>
 
@@ -1143,31 +2353,28 @@
             <h1>Introduction to Recursion</h1>
             <p class="content-meta">Module 3 • Lesson 2 • 15 min read</p>
 
+            <!-- Real-time collaboration indicator -->
+            <div class="collaboration-indicator" id="collaborationIndicator" style="display: none;">
+                <span class="presence-dot"></span>
+                <span id="collaborationText">3 learners viewing this section</span>
+            </div>
+
             <div class="content-section" data-section="1">
                 <div class="heatmap-bar heatmap-low"></div>
                 <h2>What is Recursion?</h2>
-                <p>Recursion is a programming technique where <span class="spark-highlight" data-spark="1" onclick="showSparkQuestion(1)">a function calls itself to solve a problem</span>. Instead of using loops to repeat operations, recursive functions break down complex problems into smaller, similar subproblems. Each recursive call works on a smaller piece of the original problem until reaching a simple case that can be solved directly.</p>
+                <p>Recursion is a programming technique where <span class="spark-highlight" data-spark="1" onclick="showSparkQuestion(1)" role="button" tabindex="0" aria-label="Educator question about recursion">a function calls itself to solve a problem<span class="smart-suggestion" id="smartSuggestion1"><span class="smart-suggestion-badge" tabindex="0" role="button" aria-label="3 learners had similar questions">💡 3 similar</span><div class="smart-suggestion-tooltip">Other learners asked about "recursive functions" and found these notes helpful.<a href="#" class="smart-suggestion-tooltip-link" onclick="showRelatedNotes('recursion'); return false;">View related notes →</a></div></span></span>. Instead of using loops to repeat operations, recursive functions break down complex problems into smaller, similar subproblems<span class="content-reaction-indicator" data-reaction-id="reaction-1"><span class="reaction-popup-icon">💡</span><span>3</span><div class="content-reaction-popup"><div class="reaction-popup-header">Insightful Reactions</div><div class="reaction-popup-item"><div class="reaction-popup-avatar">MJ</div><div class="reaction-popup-content"><div class="reaction-popup-name">Maria Johnson</div><div class="reaction-popup-text">"recursive functions break down complex problems"</div></div><span class="reaction-popup-icon">💡</span></div><div class="reaction-popup-item"><div class="reaction-popup-avatar" style="background: #e91e63;">SP</div><div class="reaction-popup-content"><div class="reaction-popup-name">Sarah Park</div><div class="reaction-popup-text">"smaller, similar subproblems"</div></div><span class="reaction-popup-icon">💡</span></div><div class="reaction-popup-item"><div class="reaction-popup-avatar" style="background: #ff9800;">TC</div><div class="reaction-popup-content"><div class="reaction-popup-name">Tyler Chen</div><div class="reaction-popup-text">"recursive functions break down"</div></div><span class="reaction-popup-icon">💡</span></div></div></span>. Each recursive call works on a smaller piece of the original problem until reaching a simple case that can be solved directly.</p>
             </div>
 
             <div class="content-section" data-section="2">
                 <div class="heatmap-bar heatmap-high"></div>
                 <h2>The Base Case</h2>
-                <p>Every recursive function needs a <strong>base case</strong> - <span class="spark-highlight" data-spark="2" onclick="showSparkQuestion(2)">a condition where the function stops calling itself and returns a direct result</span>. Without a base case, the function would call itself infinitely, eventually causing a stack overflow error. The base case is like the "exit door" of your recursion - it tells the function when to stop.</p>
-            </div>
-
-            <!-- Teaching Moment -->
-            <div class="teaching-moment">
-                <div class="teaching-moment-header">
-                    <span>📢</span>
-                    <span>Teaching Moment from Dr. Smith</span>
-                </div>
-                <p>I've noticed many of you found base cases unclear. Here's a simple way to think about it: <strong>the base case is the answer you already know</strong>. For factorial, you know that 1! = 1. For Fibonacci, you know F(0) = 0 and F(1) = 1. Start with what you know, and recursion handles the rest!</p>
+                <p>Every recursive function needs a <strong>base case</strong> - <span class="spark-highlight" data-spark="2" onclick="showSparkQuestion(2)" role="button" tabindex="0" aria-label="Educator question about base case">a condition where the function stops calling itself and returns a direct result<span class="content-reaction-indicator" data-reaction-id="reaction-2"><span class="reaction-popup-icon">❓</span><span>5</span><div class="content-reaction-popup"><div class="reaction-popup-header">Unclear Reactions</div><div class="reaction-popup-item"><div class="reaction-popup-avatar">AK</div><div class="reaction-popup-content"><div class="reaction-popup-name">Alex Kim</div><div class="reaction-popup-text">"condition where the function stops"</div></div><span class="reaction-popup-icon">❓</span></div><div class="reaction-popup-item"><div class="reaction-popup-avatar" style="background: #9c27b0;">JL</div><div class="reaction-popup-content"><div class="reaction-popup-name">Jamie Lee</div><div class="reaction-popup-text">"returns a direct result"</div></div><span class="reaction-popup-icon">❓</span></div><div class="reaction-popup-item"><div class="reaction-popup-avatar" style="background: #e91e63;">RT</div><div class="reaction-popup-content"><div class="reaction-popup-name">Robin Taylor</div><div class="reaction-popup-text">"function stops calling itself"</div></div><span class="reaction-popup-icon">❓</span></div></div></span></span>. Without a base case, the function would call itself infinitely, eventually causing a stack overflow error. The base case is like the "exit door" of your recursion<span class="teaching-moment" role="note" aria-label="Teaching moment from instructor"><span class="teaching-moment-badge" tabindex="0" role="button" aria-label="Teaching moment from Dr. Smith" onclick="showTeachingMomentInActivity('teaching-moment-1')">📢 Teaching tip</span><div class="teaching-moment-tooltip"><div class="teaching-moment-tooltip-header"><span>📢</span><span>Dr. Smith</span></div><p>I've noticed many of you found base cases unclear. Here's a simple way to think about it: <strong>the base case is the answer you already know</strong>. For factorial, you know that 1! = 1. For Fibonacci, you know F(0) = 0 and F(1) = 1. Start with what you know, and recursion handles the rest!</p></div></span> - it tells the function when to stop.</p>
             </div>
 
             <div class="content-section" data-section="3">
                 <div class="heatmap-bar heatmap-medium"></div>
                 <h2>The Recursive Case</h2>
-                <p>The <strong>recursive case</strong> is where the function calls itself with a modified input, moving closer to the base case. <span class="spark-highlight" data-spark="3" onclick="showSparkQuestion(3)">Each recursive call should make progress toward the base case</span> - if you're counting down, decrease the number; if you're processing a list, work with a smaller portion. This progress is essential to prevent infinite recursion.</p>
+                <p>The <strong>recursive case</strong> is where the function calls itself with a modified input, moving closer to the base case. <span class="spark-highlight" data-spark="3" onclick="showSparkQuestion(3)" role="button" tabindex="0" aria-label="Educator question about recursive case">Each recursive call should make progress toward the base case<span class="content-reaction-indicator" data-reaction-id="reaction-3"><span class="reaction-popup-icon">🔖</span><span>2</span><div class="content-reaction-popup"><div class="reaction-popup-header">Revisit Bookmarks</div><div class="reaction-popup-item"><div class="reaction-popup-avatar" style="background: #4caf50;">You</div><div class="reaction-popup-content"><div class="reaction-popup-name">You</div><div class="reaction-popup-text">"make progress toward the base case"</div></div><span class="reaction-popup-icon">🔖</span></div><div class="reaction-popup-item"><div class="reaction-popup-avatar" style="background: #9c27b0;">SP</div><div class="reaction-popup-content"><div class="reaction-popup-name">Sarah Park</div><div class="reaction-popup-text">"recursive call should make progress"</div></div><span class="reaction-popup-icon">🔖</span></div></div></span></span> - if you're counting down, decrease the number; if you're processing a list, work with a smaller portion. This progress is essential to prevent infinite recursion.</p>
             </div>
 
             <div class="content-section" data-section="4">
@@ -1185,26 +2392,34 @@ function factorial(n) {
         <!-- Notebook Panel -->
         <div class="notebook-panel" id="notebookPanel">
             <div class="notebook-header">
-                <div class="notebook-tabs">
-                    <button class="notebook-tab active" onclick="setTab('activity')">Activity</button>
-                    <button class="notebook-tab" onclick="setTab('mine')">My Notes</button>
+                <div class="notebook-tabs" role="tablist">
+                    <button class="notebook-tab active" onclick="setTab('activity')" role="tab" aria-selected="true" aria-label="View course discussion">Discussion</button>
+                    <button class="notebook-tab" onclick="setTab('mine')" role="tab" aria-selected="false" aria-label="View my notes">My Notes</button>
                 </div>
                 <div class="notebook-search-filter">
                     <div class="notebook-search">
-                        <span class="notebook-search-icon">🔍</span>
-                        <input type="text" placeholder="Search..." id="notebookSearch" oninput="handleSearch(this.value)">
+                        <span class="notebook-search-icon" aria-hidden="true">🔍</span>
+                        <input type="text" placeholder="Search discussion..." id="notebookSearch" oninput="handleSearch(this.value)" aria-label="Search discussion">
                     </div>
                     <div class="filter-dropdown">
-                        <button class="filter-btn" onclick="toggleFilterMenu()">
+                        <button class="filter-btn" onclick="toggleFilterMenu()" aria-label="Filter discussion" aria-expanded="false" id="filterBtn">
                             <span>Filter</span>
                             <span>▾</span>
                         </button>
-                        <div class="filter-menu" id="filterMenu">
-                            <div class="filter-option selected" onclick="setFilter('all')">All</div>
-                            <div class="filter-option" onclick="setFilter('notes')">📝 Notes</div>
-                            <div class="filter-option" onclick="setFilter('insightful')">💡 Insightful</div>
-                            <div class="filter-option" onclick="setFilter('unclear')">❓ Unclear</div>
-                            <div class="filter-option" onclick="setFilter('revisit')">🔖 Revisit</div>
+                        <div class="filter-menu" id="filterMenu" role="menu">
+                            <div class="filter-option selected" data-filter="all" onclick="setFilter('all')" role="menuitem" tabindex="0">All</div>
+                            <div class="filter-option" data-filter="notes" onclick="setFilter('notes')" role="menuitem" tabindex="0">📝 Posts</div>
+                            <div class="filter-option" data-filter="insightful" onclick="setFilter('insightful')" role="menuitem" tabindex="0">💡 Insightful</div>
+                            <div class="filter-option" data-filter="unclear" onclick="setFilter('unclear')" role="menuitem" tabindex="0">❓ Unclear</div>
+                            <div class="filter-option" data-filter="revisit" onclick="setFilter('revisit')" role="menuitem" tabindex="0">🔖 Revisit</div>
+                            <div class="filter-option" data-filter="instructor-replies" onclick="setFilter('instructor-replies')" role="menuitem" tabindex="0">👩‍🏫 Educator replies</div>
+                            <div class="filter-option filter-option-divider" role="separator">Scope</div>
+                            <div class="filter-option" data-filter="scope-this-module" onclick="setFilter('scope-this-module')" role="menuitem" tabindex="0">📍 This module</div>
+                            <div class="filter-option" data-filter="scope-what-is-recursion" onclick="setFilter('scope-what-is-recursion')" role="menuitem" tabindex="0">What is Recursion?</div>
+                            <div class="filter-option" data-filter="scope-base-case" onclick="setFilter('scope-base-case')" role="menuitem" tabindex="0">The Base Case</div>
+                            <div class="filter-option" data-filter="scope-recursive-case" onclick="setFilter('scope-recursive-case')" role="menuitem" tabindex="0">The Recursive Case</div>
+                            <div class="filter-option" data-filter="scope-example-factorial" onclick="setFilter('scope-example-factorial')" role="menuitem" tabindex="0">Example: Factorial</div>
+                            <div class="filter-option" data-filter="shared-with-me" onclick="setFilter('shared-with-me')" role="menuitem" tabindex="0" id="sharedWithMeFilter" style="display: none;">👤 Shared with me</div>
                         </div>
                     </div>
                 </div>
@@ -1212,132 +2427,205 @@ function factorial(n) {
 
             <div class="notebook-content" id="notebookContent">
                 <!-- Spark Question Card (hidden by default, shown when user clicks highlighted text) -->
-                <div class="spark-card" id="sparkCard" style="display: none; position: relative;">
-                    <button class="spark-card-close" onclick="hideSparkQuestion()">×</button>
+                <div class="spark-card" id="sparkCard" style="display: none; position: relative;" role="dialog" aria-labelledby="sparkQuestionText">
+                    <button class="spark-card-close" onclick="hideSparkQuestion()" aria-label="Close spark question">×</button>
                     <div class="spark-card-header">
-                        <span class="spark-icon">✨</span>
-                        <span>Instructor Question</span>
+                        <span class="spark-icon" aria-hidden="true">✨</span>
+                        <span>Educator Question</span>
                         <span class="spark-card-context" id="sparkContext">on highlighted text</span>
+                        <span class="qa-status unanswered" id="qaStatus" style="display: none;">Unanswered</span>
+                        <button class="qa-toggle" id="qaToggle" onclick="toggleQAMode()" title="Enable Q&A Mode" style="display: none;">Q&A Mode</button>
                     </div>
                     <div class="spark-card-question" id="sparkQuestionText">
                         <!-- Question text will be inserted here -->
                     </div>
                     <!-- Optional video -->
-                    <div class="spark-card-video" id="sparkVideo" style="display: none;" onclick="playSparkVideo()">
+                    <div class="spark-card-video" id="sparkVideo" style="display: none;" onclick="playSparkVideo()" role="button" tabindex="0" aria-label="Play video explanation">
                         <div class="spark-card-video-icon">▶️</div>
                         <div class="spark-card-video-text">Watch Dr. Smith's 45-second explanation</div>
                     </div>
                     <div class="spark-card-actions">
-                        <button class="spark-card-btn" onclick="viewSparkResponses()">See responses</button>
-                        <button class="spark-card-btn primary" onclick="answerSparkQuestion()">Write answer</button>
+                        <button class="spark-card-btn" onclick="viewSparkResponses()" aria-label="View learner responses">See responses</button>
+                        <button class="spark-card-btn primary" onclick="answerSparkQuestion()" aria-label="Write your answer">Write answer</button>
                     </div>
-                    <div class="spark-card-responses" onclick="viewSparkResponses()">
-                        👥 <span id="sparkResponseCount">23</span> students answered
+                    <div class="spark-card-responses" onclick="viewSparkResponses()" role="button" tabindex="0" aria-label="View 23 learner responses">
+                        👥 <span id="sparkResponseCount">23</span> learners answered
+                    </div>
+                    <!-- Q&A answers section (shown when Q&A mode is active) -->
+                    <div id="qaAnswers" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee;">
+                        <div style="font-size: 12px; font-weight: 600; color: #666; margin-bottom: 12px;">Answers:</div>
+                        <div id="qaAnswersList"></div>
                     </div>
                 </div>
 
-                <div class="notebook-section-divider">Peer Insights</div>
+                <div class="notebook-section-divider">Course discussion</div>
 
-                <!-- Featured Note -->
-                <div class="note-card featured">
+                <!-- Featured post -->
+                <div class="note-card featured" data-note-id="note-1" data-scope="The Base Case" data-context="reflection">
+                    <div class="note-connections">
+                        <span class="connection-badge" onclick="showConnections('note-1')" role="button" tabindex="0" aria-label="3 related">
+                            🔗 3 related
+                        </span>
+                    </div>
                     <div class="note-header">
-                        <div class="note-avatar">AK</div>
+                        <div class="note-avatar" aria-label="Alex Kim">AK</div>
                         <div class="note-meta">
                             <div class="note-author">Alex Kim</div>
-                            <div class="note-context">on "The Base Case"</div>
+                            <div class="note-context">on "The Base Case" · <span class="post-context-badge reflection">Reflection</span></div>
+                        </div>
+                        <!-- Moderation tools (educator only) -->
+                        <div class="note-moderation" id="moderation-note-1" style="display: none;">
+                            <button class="moderation-btn" onclick="togglePin('note-1')" title="Pin/Unpin">📌</button>
+                            <button class="moderation-btn" onclick="toggleHide('note-1')" title="Hide/Show">👁️</button>
+                            <button class="moderation-btn" onclick="toggleLock('note-1')" title="Lock/Unlock">🔒</button>
+                            <button class="moderation-btn" onclick="deleteNote('note-1')" title="Delete">🗑️</button>
                         </div>
                     </div>
                     <div class="note-highlight">"a condition where the function stops calling itself"</div>
                     <div class="note-body">I finally get it! The base case is like the ground floor of an elevator - you HAVE to stop somewhere, or you'll keep going down forever. Without it, your code just... crashes.</div>
                     <div class="note-actions">
                         <div class="vote-controls">
-                            <button class="vote-btn upvote active" onclick="vote(this, 'up')">▲</button>
+                            <button class="vote-btn upvote active" onclick="vote(this, 'up')" aria-label="Upvote this note" aria-pressed="true">▲</button>
                             <span class="vote-count">24</span>
-                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this note" aria-pressed="false">▼</button>
                         </div>
-                        <span class="note-action">💬 5 replies</span>
+                        <span class="note-action" role="button" tabindex="0" onclick="showReplyComposer('note-1')" aria-label="5 replies">💬 5 replies</span>
+                        <span class="report-btn" onclick="reportNote('note-1')" title="Report">🚩</span>
                     </div>
+                    <!-- Reply thread -->
+                    <div class="reply-thread" id="thread-note-1"></div>
                 </div>
 
-                <!-- Regular Note -->
-                <div class="note-card">
+                <!-- Regular post -->
+                <div class="note-card" data-scope="What is Recursion?" data-context="resource">
+                    <div class="note-connections">
+                        <span class="connection-badge" onclick="showConnections('note-2')" role="button" tabindex="0" aria-label="1 related">
+                            🔗 1 related
+                        </span>
+                    </div>
                     <div class="note-header">
-                        <div class="note-avatar" style="background: #e91e63;">MJ</div>
+                        <div class="note-avatar" style="background: #e91e63;" aria-label="Maria Johnson">MJ</div>
                         <div class="note-meta">
                             <div class="note-author">Maria Johnson</div>
-                            <div class="note-context">on "What is Recursion?"</div>
+                            <div class="note-context">on "What is Recursion?" · <span class="post-context-badge resource">Resource</span></div>
                         </div>
                     </div>
                     <div class="note-body">Think of recursion like Russian nesting dolls (matryoshka). Each doll contains a smaller version of itself until you reach the smallest one that's solid - that's your base case!</div>
                     <div class="note-actions">
                         <div class="vote-controls">
-                            <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this note" aria-pressed="false">▲</button>
                             <span class="vote-count">18</span>
-                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this note" aria-pressed="false">▼</button>
                         </div>
-                        <span class="note-action">💬 3 replies</span>
+                        <span class="note-action" role="button" tabindex="0" aria-label="3 replies">💬 3 replies</span>
                     </div>
                 </div>
 
-                <!-- Note with question -->
-                <div class="note-card">
+                <!-- Post with question -->
+                <div class="note-card" data-note-id="note-2" data-scope="The Recursive Case" data-context="question">
                     <div class="note-header">
-                        <div class="note-avatar" style="background: #ff9800;">TC</div>
+                        <div class="note-avatar" style="background: #ff9800;" aria-label="Tyler Chen">TC</div>
                         <div class="note-meta">
                             <div class="note-author">Tyler Chen</div>
-                            <div class="note-context">on "The Recursive Case"</div>
+                            <div class="note-context">on "The Recursive Case" · <span class="post-context-badge question">Question</span></div>
+                        </div>
+                        <!-- Moderation tools (educator only) -->
+                        <div class="note-moderation" id="moderation-note-2" style="display: none;">
+                            <button class="moderation-btn" onclick="togglePin('note-2')" title="Pin/Unpin">📌</button>
+                            <button class="moderation-btn" onclick="toggleHide('note-2')" title="Hide/Show">👁️</button>
+                            <button class="moderation-btn" onclick="toggleLock('note-2')" title="Lock/Unlock">🔒</button>
+                            <button class="moderation-btn" onclick="deleteNote('note-2')" title="Delete">🗑️</button>
                         </div>
                     </div>
                     <div class="note-highlight">"Each recursive call should make progress toward the base case"</div>
                     <div class="note-body">Wait, so what happens if my recursive call doesn't make progress? Like if I accidentally did factorial(n) instead of factorial(n-1)? Would it still crash even with a base case?</div>
                     <div class="note-actions">
                         <div class="vote-controls">
-                            <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this note" aria-pressed="false">▲</button>
                             <span class="vote-count">7</span>
-                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this note" aria-pressed="false">▼</button>
                         </div>
-                        <span class="note-action active">💬 2 replies</span>
+                        <span class="note-action active" role="button" tabindex="0" onclick="showReplyComposer('note-2')" aria-label="2 replies">💬 2 replies</span>
+                        <span class="report-btn" onclick="reportNote('note-2')" title="Report">🚩</span>
+                    </div>
+                    <!-- Reply thread -->
+                    <div class="reply-thread" id="thread-note-2">
+                        <!-- Educator response note -->
+                        <div class="note-card instructor-message" style="margin-left: 0;" data-note-id="reply-1" data-instructor="true">
+                            <div class="note-header">
+                                <div class="note-avatar" style="background: #1a1a2e;" aria-label="Dr. Smith, Educator">DS</div>
+                                <div class="note-meta">
+                                    <div class="note-author">Dr. Smith <span class="instructor-badge">Educator</span></div>
+                                    <div class="note-context">replying to Tyler</div>
+                                </div>
+                            </div>
+                            <div class="note-body">Great question, Tyler! Yes, it would still crash. The base case only helps if you can actually reach it. If factorial(5) calls factorial(5) which calls factorial(5)... you never get to n=1. Try it in your debugger!</div>
+                            <div class="note-actions">
+                                <div class="vote-controls">
+                                    <button class="vote-btn upvote active" onclick="vote(this, 'up')" aria-label="Upvote this note" aria-pressed="true">▲</button>
+                                    <span class="vote-count">12</span>
+                                    <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this note" aria-pressed="false">▼</button>
+                                </div>
+                                <span class="note-action" role="button" tabindex="0" onclick="showReplyComposer('reply-1')" aria-label="Reply">💬 Reply</span>
+                            </div>
+                            <!-- Nested reply thread -->
+                            <div class="reply-thread" id="thread-reply-1"></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Instructor response note -->
-                <div class="note-card" style="border-left: 3px solid #4361ee; margin-left: 24px;">
+                <!-- Another post -->
+                <div class="note-card" data-note-id="note-3" data-scope="Example: Factorial" data-context="resource">
                     <div class="note-header">
-                        <div class="note-avatar" style="background: #1a1a2e;">DS</div>
-                        <div class="note-meta">
-                            <div class="note-author">Dr. Smith <span style="background: #4361ee; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 4px;">Instructor</span></div>
-                            <div class="note-context">replying to Tyler</div>
-                        </div>
-                    </div>
-                    <div class="note-body">Great question, Tyler! Yes, it would still crash. The base case only helps if you can actually reach it. If factorial(5) calls factorial(5) which calls factorial(5)... you never get to n=1. Try it in your debugger!</div>
-                    <div class="note-actions">
-                        <div class="vote-controls">
-                            <button class="vote-btn upvote active" onclick="vote(this, 'up')">▲</button>
-                            <span class="vote-count">12</span>
-                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
-                        </div>
-                        <span class="note-action">💬 Reply</span>
-                    </div>
-                </div>
-
-                <!-- Another note -->
-                <div class="note-card">
-                    <div class="note-header">
-                        <div class="note-avatar" style="background: #9c27b0;">SP</div>
+                        <div class="note-avatar" style="background: #9c27b0;" aria-label="Sarah Park">SP</div>
                         <div class="note-meta">
                             <div class="note-author">Sarah Park</div>
-                            <div class="note-context">on "Example: Factorial Function"</div>
+                            <div class="note-context">on "Example: Factorial" · <span class="post-context-badge resource">Resource</span></div>
+                        </div>
+                        <!-- Moderation tools (educator only) -->
+                        <div class="note-moderation" id="moderation-note-3" style="display: none;">
+                            <button class="moderation-btn" onclick="togglePin('note-3')" title="Pin/Unpin">📌</button>
+                            <button class="moderation-btn" onclick="toggleHide('note-3')" title="Hide/Show">👁️</button>
+                            <button class="moderation-btn" onclick="toggleLock('note-3')" title="Lock/Unlock">🔒</button>
+                            <button class="moderation-btn" onclick="deleteNote('note-3')" title="Delete">🗑️</button>
                         </div>
                     </div>
                     <div class="note-body">Pro tip: I traced through factorial(4) on paper step by step. Seeing the call stack build up and then "unwind" as each call returns really helped it click. Highly recommend trying this!</div>
                     <div class="note-actions">
                         <div class="vote-controls">
-                            <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this note" aria-pressed="false">▲</button>
                             <span class="vote-count">31</span>
-                            <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this note" aria-pressed="false">▼</button>
                         </div>
-                        <span class="note-action">💬 8 replies</span>
+                        <span class="note-action" role="button" tabindex="0" onclick="showReplyComposer('note-3')" aria-label="8 replies">💬 8 replies</span>
+                        <span class="report-btn" onclick="reportNote('note-3')" title="Report">🚩</span>
                     </div>
+                    <!-- Reply thread -->
+                    <div class="reply-thread" id="thread-note-3"></div>
+                </div>
+
+                <!-- Example post shared with specific learners -->
+                <div class="note-card" style="border-left: 3px solid #9c27b0;" data-note-id="note-4" data-scope="The Base Case" data-context="question">
+                    <div class="note-header">
+                        <div class="note-avatar" style="background: #4caf50;">You</div>
+                        <div class="note-meta">
+                            <div class="note-author">Your post</div>
+                            <div class="note-context">on "The Base Case" · <span class="post-context-badge question">Question</span></div>
+                        </div>
+                        <span class="note-visibility" style="background: #e1bee7; color: #7b1fa2;">👥 Shared with 2</span>
+                    </div>
+                    <div class="note-highlight">"a condition where the function stops calling itself"</div>
+                    <div class="note-body">Quick question for my study group: Does the base case HAVE to return a value, or can it just stop execution?</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this note" aria-pressed="false">▲</button>
+                            <span class="vote-count">0</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this note" aria-pressed="false">▼</button>
+                        </div>
+                        <span class="note-action" role="button" tabindex="0" onclick="showReplyComposer('note-4')" aria-label="1 reply">💬 1 reply</span>
+                    </div>
+                    <!-- Reply thread -->
+                    <div class="reply-thread" id="thread-note-4"></div>
                 </div>
             </div>
 
@@ -1346,109 +2634,254 @@ function factorial(n) {
                 <div class="composer-highlight" id="composerHighlight">
                     <strong>Highlighted:</strong> <span id="highlightText"></span>
                 </div>
-                <textarea class="composer-textarea" placeholder="Write a note... (highlight text in the content to attach it to your note)"></textarea>
+                <div class="composer-scope" id="composerScope" style="display: none;"><strong>Scope:</strong> <span id="composerScopeText"></span></div>
+                <div class="composer-writing-wrap">
+                    <span class="composer-writing-indicator" id="composerWritingIndicator" aria-hidden="true">✍️ Writing...</span>
+                    <textarea class="composer-textarea" placeholder="✍️ Add to discussion... (highlight text in the content to attach it to your post)" aria-label="Add to discussion" id="noteComposer"></textarea>
+                </div>
+                <div class="composer-context-row">
+                    <label for="postContext" class="composer-context-label">Why are you posting?</label>
+                    <select id="postContext" class="composer-context-select" aria-label="Post context">
+                        <option value="question">Question</option>
+                        <option value="reflection" selected>Discussion / Reflection</option>
+                    </select>
+                </div>
+                <div class="composer-attach-row">
+                    <label class="composer-attach-label">
+                        <input type="file" id="postAttachment" class="composer-file-input" accept="*" aria-label="Attach file">
+                        <span class="composer-attach-btn">📎 Attach file</span>
+                        <span class="composer-attach-filename" id="postAttachmentName"></span>
+                    </label>
+                </div>
                 <div class="composer-footer">
-                    <div class="visibility-toggle">
-                        <span>Share with class</span>
-                        <div class="toggle-switch active" onclick="toggleVisibility(this)"></div>
+                    <div class="share-dropdown">
+                        <div class="visibility-toggle" onclick="toggleShareMenu()" style="cursor: pointer;">
+                            <span id="shareLabel">Share with class</span>
+                            <span style="font-size: 10px; margin-left: 4px;">▾</span>
+                        </div>
+                        <div class="share-dropdown-menu" id="shareMenu">
+                            <div class="share-option selected" onclick="setShareOption('class')">
+                                <span class="share-option-icon">🌐</span>
+                                <div class="share-option-content">
+                                    <div class="share-option-title">Share with class</div>
+                                    <div class="share-option-subtitle">All learners can see this</div>
+                                </div>
+                                <span class="share-option-check">✓</span>
+                            </div>
+                            <div class="share-option" onclick="setShareOption('selected')">
+                                <span class="share-option-icon">👥</span>
+                                <div class="share-option-content">
+                                    <div class="share-option-title">Share with selected learners</div>
+                                    <div class="share-option-subtitle">Choose specific people</div>
+                                </div>
+                            </div>
+                            <div class="share-option" onclick="setShareOption('study-group')">
+                                <span class="share-option-icon">📚</span>
+                                <div class="share-option-content">
+                                    <div class="share-option-title">Share with study group</div>
+                                    <div class="share-option-subtitle">My Study Group (5 members)</div>
+                                </div>
+                            </div>
+                            <div class="share-option" onclick="setShareOption('private')">
+                                <span class="share-option-icon">🔒</span>
+                                <div class="share-option-content">
+                                    <div class="share-option-title">Keep private</div>
+                                    <div class="share-option-subtitle">Only visible to you</div>
+                                </div>
+                            </div>
+                            <!-- Student selector (shown when "selected" is chosen) -->
+                            <div class="student-selector" id="studentSelector" style="display: none;">
+                                <div style="font-size: 11px; font-weight: 600; color: #666; margin-bottom: 8px; padding: 0 4px;">Select learners:</div>
+                                <div class="student-option">
+                                    <input type="checkbox" id="student-maria" value="Maria Johnson">
+                                    <label for="student-maria" class="student-option-label">
+                                        <div class="student-option-avatar" style="background: #e91e63;">MJ</div>
+                                        <span>Maria Johnson</span>
+                                    </label>
+                                </div>
+                                <div class="student-option">
+                                    <input type="checkbox" id="student-alex" value="Alex Kim">
+                                    <label for="student-alex" class="student-option-label">
+                                        <div class="student-option-avatar">AK</div>
+                                        <span>Alex Kim</span>
+                                    </label>
+                                </div>
+                                <div class="student-option">
+                                    <input type="checkbox" id="student-sarah" value="Sarah Park">
+                                    <label for="student-sarah" class="student-option-label">
+                                        <div class="student-option-avatar" style="background: #9c27b0;">SP</div>
+                                        <span>Sarah Park</span>
+                                    </label>
+                                </div>
+                                <div class="student-option">
+                                    <input type="checkbox" id="student-tyler" value="Tyler Chen">
+                                    <label for="student-tyler" class="student-option-label">
+                                        <div class="student-option-avatar" style="background: #ff9800;">TC</div>
+                                        <span>Tyler Chen</span>
+                                    </label>
+                                </div>
+                                <div class="student-option">
+                                    <input type="checkbox" id="student-jamie" value="Jamie Lee">
+                                    <label for="student-jamie" class="student-option-label">
+                                        <div class="student-option-avatar" style="background: #9c27b0;">JL</div>
+                                        <span>Jamie Lee</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="post-btn">Post Note</button>
+                    <button class="post-btn" onclick="postNote()" aria-label="Post to discussion">Post</button>
                 </div>
             </div>
         </div>
 
-        <!-- Instructor Dashboard -->
+        <!-- Educator Dashboard -->
         <div class="instructor-dashboard" id="instructorDashboard">
             <div class="dashboard-header">
-                <h1>Instructor Dashboard</h1>
-                <p>Module 3: Introduction to Recursion • 127 students enrolled</p>
+                <h1>Educator Dashboard</h1>
+                <p>Module 3: Introduction to Recursion • 127 learners enrolled</p>
+                <label class="dashboard-toggle" style="display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; color: #666; cursor: pointer;">
+                    <input type="checkbox" id="teachingMomentToggle" onchange="toggleTeachingMomentVisibility()" aria-label="Show Teaching Moment section">
+                    <span>Show Teaching Moment</span>
+                </label>
             </div>
 
             <div class="dashboard-grid">
-                <!-- Confusion Heatmap -->
+                <!-- Engagement by section (reactions breakdown) -->
                 <div class="dashboard-card">
-                    <h2>❓ Clarity Heatmap</h2>
+                    <h2>📊 Engagement by section</h2>
                     <div class="heatmap-list">
-                        <div class="heatmap-item" onclick="jumpToSection(2)">
+                        <div class="heatmap-item" onclick="jumpToSection(2)" role="button" tabindex="0" aria-label="Jump to The Base Case section">
                             <div class="heatmap-bar-viz">
-                                <div class="heatmap-bar-fill" style="width: 85%; background: #dc3545;"></div>
+                                <div class="heatmap-bar-fill" style="width: 85%; background: #f44336;"></div>
                             </div>
                             <span class="heatmap-item-text">The Base Case</span>
-                            <span class="stats-badge danger">47 unclear</span>
+                            <span class="heatmap-breakdown"><span class="heatmap-dot" title="Insightful">💡 12</span> <span class="heatmap-dot" title="Unclear">❓ 47</span> <span class="heatmap-dot" title="Revisit">🔖 8</span></span>
                         </div>
-                        <div class="heatmap-item" onclick="jumpToSection(3)">
+                        <div class="heatmap-item" onclick="jumpToSection(3)" role="button" tabindex="0" aria-label="Jump to The Recursive Case section">
                             <div class="heatmap-bar-viz">
-                                <div class="heatmap-bar-fill" style="width: 45%; background: #ffc107;"></div>
+                                <div class="heatmap-bar-fill" style="width: 45%; background: #ff9800;"></div>
                             </div>
                             <span class="heatmap-item-text">The Recursive Case</span>
-                            <span class="stats-badge warning">18 unclear</span>
+                            <span class="heatmap-breakdown"><span class="heatmap-dot">💡 22</span> <span class="heatmap-dot">❓ 18</span> <span class="heatmap-dot">🔖 5</span></span>
                         </div>
-                        <div class="heatmap-item" onclick="jumpToSection(4)">
+                        <div class="heatmap-item" onclick="jumpToSection(4)" role="button" tabindex="0" aria-label="Jump to Example: Factorial section">
                             <div class="heatmap-bar-viz">
-                                <div class="heatmap-bar-fill" style="width: 15%; background: #28a745;"></div>
+                                <div class="heatmap-bar-fill" style="width: 15%; background: #4caf50;"></div>
                             </div>
                             <span class="heatmap-item-text">Example: Factorial</span>
-                            <span class="stats-badge">5 unclear</span>
+                            <span class="heatmap-breakdown"><span class="heatmap-dot">💡 18</span> <span class="heatmap-dot">❓ 5</span> <span class="heatmap-dot">🔖 4</span></span>
                         </div>
-                        <div class="heatmap-item" onclick="jumpToSection(1)">
+                        <div class="heatmap-item" onclick="jumpToSection(1)" role="button" tabindex="0" aria-label="Jump to What is Recursion section">
                             <div class="heatmap-bar-viz">
-                                <div class="heatmap-bar-fill" style="width: 10%; background: #28a745;"></div>
+                                <div class="heatmap-bar-fill" style="width: 10%; background: #4caf50;"></div>
                             </div>
                             <span class="heatmap-item-text">What is Recursion?</span>
-                            <span class="stats-badge">3 unclear</span>
+                            <span class="heatmap-breakdown"><span class="heatmap-dot">💡 8</span> <span class="heatmap-dot">❓ 3</span> <span class="heatmap-dot">🔖 2</span></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Questions to Feature -->
+                <!-- Student contributions to feature -->
                 <div class="dashboard-card">
-                    <h2>❓ Student Questions</h2>
+                    <h2>💬 Learner contributions</h2>
                     <div class="featured-list">
                         <div class="featured-item">
+                            <span class="contribution-type question">Question</span>
                             <div class="featured-item-text">"What happens if my recursive call doesn't make progress toward the base case?"</div>
                             <div class="featured-item-meta">
                                 Tyler Chen • 7 upvotes
-                                <button class="feature-btn" onclick="featureQuestion(this)">⭐ Feature</button>
+                                <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Feature this contribution">⭐ Feature</button>
                             </div>
                         </div>
                         <div class="featured-item">
-                            <div class="featured-item-text">"Is there a maximum depth for recursion? How deep can it go?"</div>
+                            <span class="contribution-type comment">Comment</span>
+                            <div class="featured-item-text">"Tracing through factorial(4) on paper step by step finally made the call stack click for me. The unwind is the key."</div>
                             <div class="featured-item-meta">
                                 Jamie Lee • 4 upvotes
-                                <button class="feature-btn" onclick="featureQuestion(this)">⭐ Feature</button>
+                                <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Feature this contribution">⭐ Feature</button>
                             </div>
                         </div>
                         <div class="featured-item">
+                            <span class="contribution-type question">Question</span>
                             <div class="featured-item-text">"When should I use recursion vs a regular loop?"</div>
                             <div class="featured-item-meta">
                                 Robin Taylor • 12 upvotes
-                                <button class="feature-btn" onclick="featureQuestion(this)">⭐ Feature</button>
+                                <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Feature this contribution">⭐ Feature</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Create Spark Question -->
+                <!-- Guided prompts (section-based and/or attach to highlighted text - merged with Spark Questions) -->
                 <div class="dashboard-card">
-                    <h2>✨ Create Spark Question</h2>
-                    <div class="create-spark-form">
-                        <input type="text" placeholder="Text to highlight in content (e.g., 'a function calls itself')">
-                        <textarea placeholder="Write a question that prompts reflection or application of the concept..."></textarea>
-                        <div style="display: flex; gap: 8px; align-items: center; font-size: 13px; color: #666;">
-                            <input type="checkbox" id="includeVideo">
-                            <label for="includeVideo">Include video explanation</label>
+                    <h2>📌 Guided prompts</h2>
+                    <p class="dashboard-card-desc">Create prompts that appear in a section and optionally on specific highlighted text. Choose the type of response (Question, Resource, Reflection, etc.). Attach to text to show the prompt when learners click that highlight (like a spark question).</p>
+                    <div class="prompt-form educator-writing-form">
+                        <span class="educator-writing-indicator" aria-hidden="true">✍️ Writing...</span>
+                        <label class="prompt-label">Prompt title</label>
+                        <input type="text" id="guidedPromptTitle" class="prompt-input" placeholder="✍️ e.g. Reflect on the base case">
+                        <label class="prompt-label">Prompt type</label>
+                        <select id="guidedPromptType" class="prompt-select" aria-label="Type of response (Question, Resource, Reflection, etc.)">
+                            <option value="question">Question</option>
+                            <option value="resource">Resource</option>
+                            <option value="reflection">Reflection</option>
+                            <option value="assignment">Assignment response</option>
+                            <option value="general">General</option>
+                        </select>
+                        <label class="prompt-label">Instructions</label>
+                        <textarea id="guidedPromptInstructions" class="prompt-textarea" placeholder="✍️ What should learners do? (e.g. Share one example from your experience where a 'base case' stops a process.)" rows="3"></textarea>
+                        <div class="prompt-row">
+                            <div class="prompt-field">
+                                <label class="prompt-label" for="guidedPromptShowIn">Show in</label>
+                                <select id="guidedPromptShowIn" class="prompt-select" aria-label="Section where prompt appears">
+                                    <option value="What is Recursion?">What is Recursion?</option>
+                                    <option value="The Base Case">The Base Case</option>
+                                    <option value="The Recursive Case">The Recursive Case</option>
+                                    <option value="Example: Factorial">Example: Factorial</option>
+                                </select>
+                            </div>
+                            <div class="prompt-field">
+                                <label class="prompt-label">Required</label>
+                                <select id="guidedPromptRequired" class="prompt-select" aria-label="Required for completion">
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
                         </div>
-                        <button onclick="createSparkQuestion()">Add Spark Question</button>
+                        <div class="pick-from-content-row">
+                            <label class="pick-label">Attach to text in content (optional)</label>
+                            <button type="button" class="pick-from-content-btn" onclick="startInstructorPickMode('guidedPrompt')" aria-label="Select text in content to attach prompt to">Select text in content</button>
+                            <span id="guidedPromptHighlightPreview" class="pick-preview">No text selected</span>
+                            <input type="hidden" id="guidedPromptHighlightText" aria-label="Selected text for highlight">
+                        </div>
+                        <div class="pick-from-content-row">
+                            <label class="pick-label">Optional video explanation</label>
+                            <input type="url" id="guidedPromptVideoUrl" class="input-url prompt-input" placeholder="https://... (paste video link)" aria-label="Video URL for explanation">
+                        </div>
+                        <button type="button" class="prompt-submit-btn" onclick="createGuidedPrompt()" aria-label="Create guided prompt">Create prompt</button>
                     </div>
                 </div>
 
-                <!-- Create Teaching Moment -->
-                <div class="dashboard-card">
+                <!-- Create Teaching Moment (visibility toggled by dashboard checkbox) -->
+                <div class="dashboard-card" id="teachingMomentCard" style="display: none;">
                     <h2>📢 Create Teaching Moment</h2>
-                    <div class="create-teaching-form">
-                        <input type="text" placeholder="Title (e.g., 'Common Mistake: Forgetting Base Case')">
-                        <textarea placeholder="Address a common misconception or provide additional clarification based on what you're seeing..."></textarea>
-                        <button onclick="createTeachingMoment()">Post Teaching Moment</button>
+                    <div class="create-teaching-form educator-writing-form">
+                        <span class="educator-writing-indicator" aria-hidden="true">✍️ Writing...</span>
+                        <div class="pick-from-content-row">
+                            <label class="pick-label">Attach to content</label>
+                            <button type="button" class="pick-from-content-btn" onclick="startInstructorPickMode('teachingMoment')" aria-label="Select text in content to attach to">Select text in content</button>
+                            <span id="teachingMomentAttachPreview" class="pick-preview">No text selected</span>
+                            <input type="hidden" id="teachingMomentAttachText" aria-hidden="true">
+                            <input type="hidden" id="teachingMomentAttachSection" aria-hidden="true">
+                        </div>
+                        <input type="text" id="teachingMomentTitle" placeholder="✍️ Title (e.g., 'Common Mistake: Forgetting Base Case')" aria-label="Teaching moment title">
+                        <textarea id="teachingMomentContent" placeholder="✍️ Address a common misconception or provide additional clarification based on what you're seeing..." aria-label="Teaching moment content"></textarea>
+                        <div class="pick-from-content-row">
+                            <label class="pick-label">Optional video</label>
+                            <input type="url" id="teachingMomentVideoUrl" class="input-url" placeholder="https://... (paste video link)" aria-label="Video URL for teaching moment">
+                        </div>
+                        <button onclick="createTeachingMoment()" aria-label="Post teaching moment">Post Teaching Moment</button>
                     </div>
                 </div>
 
@@ -1458,7 +2891,7 @@ function factorial(n) {
                     <div style="display: flex; gap: 32px; padding: 16px 0;">
                         <div style="text-align: center;">
                             <div style="font-size: 36px; font-weight: 700; color: #4361ee;">73%</div>
-                            <div style="color: #666; font-size: 14px;">Students with notes</div>
+                            <div style="color: #666; font-size: 14px;">Learners with notes</div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 36px; font-weight: 700; color: #28a745;">89%</div>
@@ -1478,25 +2911,440 @@ function factorial(n) {
                         </div>
                     </div>
                 </div>
+
+                <!-- Individual Student Analytics -->
+                <div class="dashboard-card" style="grid-column: span 2;">
+                    <h2>👤 Individual Learner Analytics</h2>
+                    <div class="student-analytics-wrap">
+                        <table class="student-analytics-table" aria-label="Learner participation metrics">
+                            <thead>
+                                <tr>
+                                    <th>Learner</th>
+                                    <th class="num">Notes shared</th>
+                                    <th class="num">Replies</th>
+                                    <th class="num">Spark answers</th>
+                                    <th>Last active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="student-name">Alex Kim</td><td class="num">12</td><td class="num">8</td><td class="num">3</td><td>2 hours ago</td></tr>
+                                <tr><td class="student-name">Maria Johnson</td><td class="num">9</td><td class="num">14</td><td class="num">3</td><td>5 hours ago</td></tr>
+                                <tr><td class="student-name">Tyler Chen</td><td class="num">6</td><td class="num">4</td><td class="num">2</td><td>1 day ago</td></tr>
+                                <tr><td class="student-name">Sarah Park</td><td class="num">15</td><td class="num">22</td><td class="num">3</td><td>3 hours ago</td></tr>
+                                <tr><td class="student-name">Jamie Lee</td><td class="num">4</td><td class="num">2</td><td class="num">1</td><td>2 days ago</td></tr>
+                                <tr><td class="student-name">Robin Taylor</td><td class="num">8</td><td class="num">6</td><td class="num">3</td><td>6 hours ago</td></tr>
+                                <tr><td class="student-name">Jordan Blake</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td>5 days ago</td></tr>
+                                <tr><td class="student-name">Casey Morgan</td><td class="num">11</td><td class="num">9</td><td class="num">3</td><td>4 hours ago</td></tr>
+                                <tr><td class="student-name">Sam Rivera</td><td class="num">7</td><td class="num">5</td><td class="num">2</td><td>1 day ago</td></tr>
+                                <tr><td class="student-name">Riley Kim</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>—</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 12px; color: #666;">Showing 10 of 127 learners · <a href="#" style="color: #4361ee;">Export CSV</a></div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Highlight Tooltip -->
     <div class="highlight-tooltip" id="highlightTooltip">
-        <div class="highlight-tooltip-actions">
-            <button class="add-note-btn" onclick="addNoteFromHighlight()">+ Add Note</button>
+            <div class="highlight-tooltip-actions">
+            <button class="add-note-btn" onclick="addNoteFromHighlight()" aria-label="Add note from highlighted text">+ Add Note</button>
             <div class="highlight-tooltip-divider"></div>
             <div class="highlight-reactions">
-                <button class="highlight-reaction" onclick="reactToContent('insightful')" title="Insightful">💡</button>
-                <button class="highlight-reaction" onclick="reactToContent('unclear')" title="Unclear">❓</button>
-                <button class="highlight-reaction" onclick="reactToContent('revisit')" title="Revisit">🔖</button>
+                <button class="highlight-reaction" onclick="reactToContent('insightful')" title="Insightful" aria-label="Mark as insightful">💡</button>
+                <button class="highlight-reaction" onclick="reactToContent('unclear')" title="Unclear" aria-label="Mark as unclear">❓</button>
+                <button class="highlight-reaction" onclick="reactToContent('revisit')" title="Revisit" aria-label="Bookmark to revisit">🔖</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Modal -->
+    <div class="connection-modal" id="connectionModal" role="dialog" aria-labelledby="connectionModalTitle" aria-hidden="true">
+        <div class="connection-modal-content">
+            <div class="connection-modal-header">
+                <h3 id="connectionModalTitle">Related Notes</h3>
+                <button class="connection-modal-close" onclick="closeConnectionModal()" aria-label="Close connection modal">×</button>
+            </div>
+            <div class="connection-list" id="connectionList">
+                <!-- Connections will be populated here -->
             </div>
         </div>
     </div>
 
     <script>
-        // Spark Question Data
+        // Mock data for real-time collaboration
+        const mockCollaborators = [
+            { name: "Sarah Park", section: 1 },
+            { name: "Jamie Lee", section: 1 },
+            { name: "Alex Kim", section: 2 }
+        ];
+
+        // Mock data for smart suggestions
+        const mockSuggestions = {
+            'recursion': [
+                { author: "Maria Johnson", text: "Think of recursion like Russian nesting dolls...", votes: 18 },
+                { author: "Alex Kim", text: "The base case is like the ground floor of an elevator...", votes: 24 },
+                { author: "Sarah Park", text: "I traced through factorial(4) on paper step by step...", votes: 31 }
+            ]
+        };
+
+        // Mock data for note connections
+        const mockConnections = {
+            'note-1': [
+                { author: "Maria Johnson", text: "Think of recursion like Russian nesting dolls (matryoshka).", section: "What is Recursion?", votes: 18 },
+                { author: "Tyler Chen", text: "Wait, so what happens if my recursive call doesn't make progress?", section: "The Recursive Case", votes: 7 },
+                { author: "Sarah Park", text: "Pro tip: I traced through factorial(4) on paper step by step.", section: "Example: Factorial Function", votes: 31 }
+            ],
+            'note-2': [
+                { author: "Alex Kim", text: "I finally get it! The base case is like the ground floor of an elevator...", section: "The Base Case", votes: 24 }
+            ]
+        };
+
+        // Real-time collaboration simulation
+        function updateCollaborationIndicator() {
+            const indicator = document.getElementById('collaborationIndicator');
+            const text = document.getElementById('collaborationText');
+            const currentSection = getCurrentSection();
+            
+            const collaborators = mockCollaborators.filter(c => c.section === currentSection);
+            
+            if (collaborators.length > 0) {
+                const names = collaborators.map(c => c.name.split(' ')[0]).join(', ');
+                const count = collaborators.length;
+                text.textContent = `${count} learner${count > 1 ? 's' : ''} viewing this section (${names})`;
+                indicator.style.display = 'flex';
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+
+        function getCurrentSection() {
+            const sections = document.querySelectorAll('.content-section');
+            for (let i = 0; i < sections.length; i++) {
+                const rect = sections[i].getBoundingClientRect();
+                if (rect.top >= 0 && rect.top < 300) {
+                    return parseInt(sections[i].dataset.section);
+                }
+            }
+            return 1;
+        }
+
+        // Update collaboration indicator on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentPanel = document.getElementById('contentPanel');
+            if (contentPanel) {
+                contentPanel.addEventListener('scroll', updateCollaborationIndicator);
+                setInterval(updateCollaborationIndicator, 2000);
+                updateCollaborationIndicator();
+            }
+            
+            // Initialize moderation tools and Q&A toggle visibility
+            showModerationTools();
+            showQAToggle();
+        });
+
+        // Smart suggestions
+        function showRelatedNotes(topic) {
+            const suggestions = mockSuggestions[topic] || [];
+            if (suggestions.length === 0) return;
+            
+            // Scroll to first related note
+            setTimeout(() => {
+                const firstNote = document.querySelector('.note-card');
+                if (firstNote) {
+                    firstNote.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstNote.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.3)';
+                    setTimeout(() => {
+                        firstNote.style.boxShadow = '';
+                    }, 2000);
+                }
+            }, 300);
+        }
+
+        // Show note connections
+        function showConnections(noteId) {
+            const modal = document.getElementById('connectionModal');
+            const list = document.getElementById('connectionList');
+            const connections = mockConnections[noteId] || [];
+
+            if (!modal || !list) return;
+
+            modal.setAttribute('aria-hidden', 'false');
+            modal.classList.add('show');
+
+            list.innerHTML = '';
+            if (connections.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No related notes found.</p>';
+                return;
+            }
+
+            connections.forEach(conn => {
+                const item = document.createElement('div');
+                item.className = 'connection-item';
+                item.innerHTML = `
+                    <div class="connection-item-header">
+                        <div class="note-avatar" style="background: #4361ee;">${conn.author.split(' ').map(n => n[0]).join('')}</div>
+                        <div>
+                            <div class="note-author">${conn.author}</div>
+                            <div class="note-context">on "${conn.section}"</div>
+                        </div>
+                    </div>
+                    <div class="connection-item-text">${conn.text}</div>
+                    <div class="connection-item-meta">${conn.votes} upvotes</div>
+                `;
+                item.onclick = () => {
+                    closeConnectionModal();
+                    showToast(`Navigating to ${conn.author}'s note... 📍`);
+                };
+                list.appendChild(item);
+            });
+        }
+
+        function closeConnectionModal() {
+            const modal = document.getElementById('connectionModal');
+            if (modal) {
+                modal.setAttribute('aria-hidden', 'true');
+                modal.classList.remove('show');
+            }
+        }
+
+        // Close modal on background click
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('connectionModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeConnectionModal();
+                    }
+                });
+            }
+        });
+
+        // Share options state
+        let currentShareOption = 'class';
+        let selectedStudents = [];
+
+        // Toggle share menu
+        function toggleShareMenu() {
+            const menu = document.getElementById('shareMenu');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+
+        // Set share option
+        function setShareOption(option) {
+            currentShareOption = option;
+            const menu = document.getElementById('shareMenu');
+            const label = document.getElementById('shareLabel');
+            const studentSelector = document.getElementById('studentSelector');
+
+            // Update selected state
+            document.querySelectorAll('.share-option').forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.share-option').classList.add('selected');
+
+            // Update label
+            const labels = {
+                'class': 'Share with class',
+                'selected': 'Share with selected',
+                'study-group': 'Share with study group',
+                'private': 'Keep private'
+            };
+            if (label) label.textContent = labels[option] || 'Share';
+
+            // Show/hide student selector
+            if (studentSelector) {
+                studentSelector.style.display = option === 'selected' ? 'block' : 'none';
+            }
+
+            // Close menu after selection (except when selecting students)
+            if (option !== 'selected') {
+                setTimeout(() => {
+                    if (menu) menu.classList.remove('show');
+                }, 200);
+            }
+        }
+
+        // Close share menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const shareDropdown = document.querySelector('.share-dropdown');
+            const shareMenu = document.getElementById('shareMenu');
+            if (shareDropdown && shareMenu && !shareDropdown.contains(e.target)) {
+                shareMenu.classList.remove('show');
+            }
+        });
+
+        // Enhanced post note with success animation
+        function postNote() {
+            const textarea = document.getElementById('noteComposer');
+            if (!textarea || !textarea.value.trim()) {
+                showToast('Please write something before posting ✏️');
+                return;
+            }
+
+            // Get selected students if sharing with selected
+            if (currentShareOption === 'selected') {
+                selectedStudents = Array.from(document.querySelectorAll('#studentSelector input[type="checkbox"]:checked'))
+                    .map(cb => cb.value);
+                if (selectedStudents.length === 0) {
+                    showToast('Please select at least one learner to share with');
+                    return;
+                }
+            }
+
+            const postContext = (document.getElementById('postContext') && document.getElementById('postContext').value) || 'reflection';
+            const scopeLine = document.getElementById('composerScope');
+            const scope = (scopeLine && scopeLine.style.display === 'block' && document.getElementById('composerScopeText')) ? document.getElementById('composerScopeText').textContent : (currentSection || 'Content');
+            const fileInput = document.getElementById('postAttachment');
+            const attachmentName = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0].name : '';
+
+            const btn = document.querySelector('.post-btn');
+            if (btn) {
+                btn.classList.add('success');
+                btn.textContent = '✓ Posted!';
+
+                const shareMessages = {
+                    'class': 'Post added to discussion! 💬',
+                    'selected': `Note shared with ${selectedStudents.length} learner${selectedStudents.length > 1 ? 's' : ''}! 👥`,
+                    'study-group': 'Note shared with study group! 📚',
+                    'private': 'Note saved privately! 🔒'
+                };
+
+                // When sharing with class, inject new post into Discussion feed
+                if (currentShareOption === 'class') {
+                    const content = document.getElementById('notebookContent');
+                    const divider = content && content.querySelector('.notebook-section-divider');
+                    const contextLabels = { question: 'Question', reflection: 'Discussion / Reflection' };
+                    var newId = 'note-new-' + Date.now();
+                    const newCard = document.createElement('div');
+                    newCard.className = 'note-card';
+                    newCard.setAttribute('data-note-id', newId);
+                    newCard.setAttribute('data-scope', scope);
+                    newCard.setAttribute('data-context', postContext);
+                    const highlightEl = document.getElementById('composerHighlight');
+                    const hasHighlight = highlightEl && highlightEl.classList.contains('active');
+                    const highlightQuote = hasHighlight ? (document.getElementById('highlightText') && document.getElementById('highlightText').textContent) : '';
+                    newCard.innerHTML =
+                        '<div class="note-header">' +
+                        '<div class="note-avatar" style="background: #4caf50;">You</div>' +
+                        '<div class="note-meta">' +
+                        '<div class="note-author">You</div>' +
+                        '<div class="note-context">on "' + scope + '" · <span class="post-context-badge ' + postContext + '">' + (contextLabels[postContext] || postContext) + '</span></div>' +
+                        '</div></div>' +
+                        (highlightQuote ? '<div class="note-highlight">"' + highlightQuote.replace(/"/g, '&quot;') + '"</div>' : '') +
+                        '<div class="note-body">' + textarea.value.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
+                        (attachmentName ? '<div class="note-attachment">📎 ' + attachmentName.replace(/</g, '&lt;') + '</div>' : '') +
+                        '<div class="note-actions">' +
+                        '<div class="vote-controls"><button class="vote-btn upvote" onclick="vote(this, \'up\')" aria-label="Upvote">▲</button><span class="vote-count">0</span><button class="vote-btn downvote" onclick="vote(this, \'down\')" aria-label="Downvote">▼</button></div>' +
+                        '<span class="note-action" role="button" tabindex="0" onclick="showReplyComposer(\'' + newId + '\')" aria-label="Replies">💬 0 replies</span>' +
+                        '</div><div class="reply-thread" id="thread-' + newId + '"></div>';
+                    if (content) {
+                        const firstCard = Array.from(content.querySelectorAll('.note-card')).find(function(n) { return !n.closest('.reply-thread'); });
+                        if (firstCard) content.insertBefore(newCard, firstCard);
+                        else content.appendChild(newCard);
+                    }
+                }
+
+                setTimeout(() => {
+                    btn.classList.remove('success');
+                    btn.textContent = 'Post';
+                    textarea.value = '';
+                    const highlight = document.getElementById('composerHighlight');
+                    if (highlight) highlight.classList.remove('active');
+                    const scopeEl = document.getElementById('composerScope');
+                    if (scopeEl) scopeEl.style.display = 'none';
+                    const ctxSelect = document.getElementById('postContext');
+                    if (ctxSelect) ctxSelect.value = 'reflection';
+                    if (fileInput) {
+                        fileInput.value = '';
+                        const nameEl = document.getElementById('postAttachmentName');
+                        if (nameEl) nameEl.textContent = '';
+                    }
+                    showToast(shareMessages[currentShareOption] || 'Note posted successfully! 🎉');
+                    currentShareOption = 'class';
+                    selectedStudents = [];
+                    document.querySelectorAll('#studentSelector input[type="checkbox"]').forEach(cb => cb.checked = false);
+                    const label = document.getElementById('shareLabel');
+                    if (label) label.textContent = 'Share with class';
+                    if (currentTab === 'activity') applyActivitySearchAndFilter();
+                }, 1000);
+            }
+        }
+
+        // Show teaching moment in Activity feed
+        function showTeachingMomentInActivity(momentId) {
+            const teachingMoments = {
+                'teaching-moment-1': {
+                    title: 'Teaching Moment: Understanding Base Cases',
+                    author: 'Dr. Smith',
+                    content: "I've noticed many of you found base cases unclear. Here's a simple way to think about it: the base case is the answer you already know. For factorial, you know that 1! = 1. For Fibonacci, you know F(0) = 0 and F(1) = 1. Start with what you know, and recursion handles the rest!",
+                    section: 'The Base Case',
+                    timestamp: 'Just now'
+                }
+            };
+
+            const moment = teachingMoments[momentId];
+            if (!moment) return;
+
+            // Switch to Activity tab
+            setTab('activity');
+            document.querySelectorAll('.notebook-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.notebook-tab')[0].classList.add('active');
+
+            // Create teaching moment card in Activity feed
+            const content = document.getElementById('notebookContent');
+            const sparkCard = document.getElementById('sparkCard');
+            
+            // Create teaching moment card (instructor message styling)
+            const momentCard = document.createElement('div');
+            momentCard.className = 'note-card instructor-message';
+            momentCard.setAttribute('data-instructor', 'true');
+            momentCard.innerHTML = `
+                <div class="note-header">
+                    <div class="note-avatar" style="background: #1a1a2e;">DS</div>
+                    <div class="note-meta">
+                        <div class="note-author">${moment.author} <span class="instructor-badge" style="background: #f57c00;">Teaching Moment</span></div>
+                        <div class="note-context">on "${moment.section}"</div>
+                    </div>
+                </div>
+                <div class="note-highlight" style="background: #fff3cd; border-left-color: #f57c00;">
+                    <strong>${moment.title}</strong>
+                </div>
+                <div class="note-body">${moment.content}</div>
+                <div class="note-actions">
+                    <div class="vote-controls">
+                        <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this teaching moment" aria-pressed="false">▲</button>
+                        <span class="vote-count">0</span>
+                        <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this teaching moment" aria-pressed="false">▼</button>
+                    </div>
+                    <span class="note-action" role="button" tabindex="0" aria-label="Reply">💬 Reply</span>
+                </div>
+            `;
+
+            // Insert after spark card or at top
+            if (sparkCard && sparkCard.style.display !== 'none') {
+                sparkCard.insertAdjacentElement('afterend', momentCard);
+            } else {
+                const divider = content.querySelector('.notebook-section-divider');
+                if (divider) {
+                    divider.insertAdjacentElement('afterend', momentCard);
+                } else {
+                    content.insertBefore(momentCard, content.firstChild);
+                }
+            }
+
+            // Scroll to the teaching moment
+            momentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            momentCard.style.boxShadow = '0 0 0 4px rgba(255, 193, 7, 0.3)';
+            setTimeout(() => {
+                momentCard.style.boxShadow = '';
+            }, 2000);
+
+            showToast('Teaching moment added to Activity feed! 📢');
+        }
+
+        // Guided prompts that appear on highlighted text (spark-style). IDs 1–3 are preloaded; new ones from Guided prompts card use nextSparkId.
         const sparkQuestions = {
             1: {
                 text: "Before reading further, try to think of a real-world example of recursion. What everyday process involves repeating the same steps on a smaller scale?",
@@ -1517,6 +3365,7 @@ function factorial(n) {
                 responseCount: 15
             }
         };
+        let nextSparkId = 4;
 
         let activeSparkId = null;
 
@@ -1555,10 +3404,61 @@ function factorial(n) {
         }
 
         function answerSparkQuestion() {
-            const answer = prompt('Write your answer:');
-            if (answer) {
-                alert('Your answer has been submitted! You can now see how others answered.');
-                // In real app, would add to responses and show them
+            // Check if Q&A mode is active
+            if (qaModeActive) {
+                const answer = prompt('Write your answer:');
+                if (answer) {
+                    const answerId = `answer-${Date.now()}`;
+                    const qaAnswersList = document.getElementById('qaAnswersList');
+                    if (qaAnswersList) {
+                        // Clear "no answers" message
+                        const noAnswersMsg = qaAnswersList.querySelector('div[style*="color: #999"]');
+                        if (noAnswersMsg) {
+                            qaAnswersList.innerHTML = '';
+                        }
+                        
+                        const answerCard = document.createElement('div');
+                        answerCard.className = 'note-card';
+                        answerCard.setAttribute('data-answer-id', answerId);
+                        answerCard.style.borderLeft = '3px solid #28a745';
+                        const isInstructor = document.querySelector('.view-btn.active').textContent.includes('Educator');
+                        answerCard.innerHTML = `
+                            <div class="note-header">
+                                <div class="note-avatar" style="background: #4caf50;">You</div>
+                                <div class="note-meta">
+                                    <div class="note-author">You</div>
+                                    <div class="note-context">answered</div>
+                                </div>
+                            </div>
+                            <div class="note-body">${answer}</div>
+                            <div class="note-actions">
+                                <div class="vote-controls">
+                                    <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
+                                    <span class="vote-count">0</span>
+                                    <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
+                                </div>
+                                ${isInstructor ? `<button class="mark-answered-btn" onclick="markAsAnswered('${answerId}')">✓ Mark as Best Answer</button>` : ''}
+                            </div>
+                        `;
+                        qaAnswersList.appendChild(answerCard);
+                        
+                        // Update status
+                        const statusEl = document.getElementById('qaStatus');
+                        if (statusEl) {
+                            statusEl.className = 'qa-status answered';
+                            statusEl.textContent = 'Answered';
+                        }
+                        
+                        showToast('Your answer has been submitted! ✅');
+                    }
+                }
+            } else {
+                // Original behavior for non-Q&A mode
+                const answer = prompt('Write your answer:');
+                if (answer) {
+                    showToast('Your answer has been submitted! You can now see how others answered. ✅');
+                    // In real app, would add to responses and show them
+                }
             }
         }
 
@@ -1573,7 +3473,7 @@ function factorial(n) {
             alert('Playing video explanation from Dr. Smith (45 seconds)...\n\n[Video would play here in the actual implementation]');
         }
 
-        // Vote on notes (upvote/downvote)
+        // Vote on notes (upvote/downvote) - Enhanced with accessibility
         function vote(btn, direction) {
             const controls = btn.closest('.vote-controls');
             const countEl = controls.querySelector('.vote-count');
@@ -1584,33 +3484,45 @@ function factorial(n) {
             if (direction === 'up') {
                 if (upBtn.classList.contains('active')) {
                     upBtn.classList.remove('active');
+                    upBtn.setAttribute('aria-pressed', 'false');
                     count--;
                 } else {
                     upBtn.classList.add('active');
+                    upBtn.setAttribute('aria-pressed', 'true');
                     count++;
                     if (downBtn.classList.contains('active')) {
                         downBtn.classList.remove('active');
+                        downBtn.setAttribute('aria-pressed', 'false');
                         count++;
                     }
                 }
             } else {
                 if (downBtn.classList.contains('active')) {
                     downBtn.classList.remove('active');
+                    downBtn.setAttribute('aria-pressed', 'false');
                     count++;
                 } else {
                     downBtn.classList.add('active');
+                    downBtn.setAttribute('aria-pressed', 'true');
                     count--;
                     if (upBtn.classList.contains('active')) {
                         upBtn.classList.remove('active');
+                        upBtn.setAttribute('aria-pressed', 'false');
                         count--;
                     }
                 }
             }
 
             countEl.textContent = count;
+            
+            // Micro-interaction feedback
+            btn.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                btn.style.transform = '';
+            }, 200);
         }
 
-        // React to content from tooltip
+        // React to content from tooltip - Enhanced with micro-interactions
         function reactToContent(type) {
             const btn = event.target;
             btn.classList.toggle('selected');
@@ -1633,14 +3545,15 @@ function factorial(n) {
 
             // Feedback messages for each reaction type
             const messages = {
-                insightful: 'Marked as insightful - added to My Notes!',
-                unclear: 'Marked as unclear - added to My Notes!',
-                revisit: 'Bookmarked to revisit - added to My Notes!'
+                insightful: 'Marked as insightful - added to My Notes! 💡',
+                unclear: 'Marked as unclear - added to My Notes! ❓',
+                revisit: 'Bookmarked to revisit - added to My Notes! 🔖'
             };
 
             // Hide tooltip after reaction
             setTimeout(() => {
-                document.getElementById('highlightTooltip').style.display = 'none';
+                const tooltip = document.getElementById('highlightTooltip');
+                if (tooltip) tooltip.style.display = 'none';
             }, 300);
 
             // Brief visual confirmation
@@ -1665,7 +3578,7 @@ function factorial(n) {
             return 'Content';
         }
 
-        // Simple toast notification
+        // Enhanced toast notification with accessibility
         function showToast(message) {
             // Remove existing toast if any
             const existing = document.querySelector('.toast-notification');
@@ -1674,19 +3587,8 @@ function factorial(n) {
             const toast = document.createElement('div');
             toast.className = 'toast-notification';
             toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 24px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #1a1a2e;
-                color: white;
-                padding: 12px 24px;
-                border-radius: 8px;
-                font-size: 14px;
-                z-index: 1000;
-                animation: fadeInUp 0.3s ease;
-            `;
+            toast.setAttribute('role', 'status');
+            toast.setAttribute('aria-live', 'polite');
             document.body.appendChild(toast);
 
             setTimeout(() => {
@@ -1696,16 +3598,373 @@ function factorial(n) {
             }, 2000);
         }
 
-        // View toggle (Learner vs Instructor)
+        // Threaded replies functionality
+        let replyComposers = {};
+
+        function showReplyComposer(noteId) {
+            // Check if note is locked
+            const noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (noteCard && noteCard.classList.contains('locked')) {
+                showToast('This thread is locked. No new replies allowed.');
+                return;
+            }
+
+            // Hide other composers
+            Object.keys(replyComposers).forEach(id => {
+                if (id !== noteId) {
+                    const composer = document.getElementById(`reply-composer-${id}`);
+                    if (composer) composer.classList.remove('active');
+                }
+            });
+
+            // Show/create composer for this note
+            let composer = document.getElementById(`reply-composer-${noteId}`);
+            if (!composer) {
+                if (!noteCard) return;
+
+                // Find or create reply thread
+                let thread = noteCard.querySelector('.reply-thread');
+                if (!thread) {
+                    thread = document.createElement('div');
+                    thread.className = 'reply-thread';
+                    thread.id = `thread-${noteId}`;
+                    noteCard.appendChild(thread);
+                }
+
+                composer = document.createElement('div');
+                composer.id = `reply-composer-${noteId}`;
+                composer.className = 'reply-composer';
+                composer.innerHTML = `
+                    <span class="reply-writing-indicator" id="reply-writing-${noteId}" aria-hidden="true">✍️ Writing...</span>
+                    <textarea placeholder="✍️ Write a reply..." id="reply-text-${noteId}" rows="3"></textarea>
+                    <div class="reply-composer-actions">
+                        <button class="reply-btn" onclick="postReply('${noteId}')">Reply</button>
+                        <button class="cancel-reply-btn" onclick="cancelReply('${noteId}')">Cancel</button>
+                    </div>
+                `;
+                thread.appendChild(composer);
+            }
+
+            composer.classList.add('active');
+            const textarea = composer.querySelector('textarea');
+            if (textarea) {
+                textarea.focus();
+                // Auto-resize textarea
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                });
+            }
+            replyComposers[noteId] = composer;
+        }
+
+        function postReply(noteId) {
+            const textarea = document.getElementById(`reply-text-${noteId}`);
+            if (!textarea) return;
+            const text = textarea.value.trim();
+            if (!text) {
+                showToast('Please write a reply before posting ✏️');
+                return;
+            }
+
+            // Get parent note author
+            const parentNote = document.querySelector(`[data-note-id="${noteId}"]`);
+            const parentAuthor = parentNote ? parentNote.querySelector('.note-author').textContent.trim() : 'author';
+
+            // Create reply card
+            const replyId = `reply-${Date.now()}`;
+            const replyCard = document.createElement('div');
+            replyCard.className = 'note-card';
+            replyCard.setAttribute('data-note-id', replyId);
+            replyCard.style.borderLeft = '3px solid #4361ee';
+            replyCard.style.marginLeft = '0';
+            replyCard.innerHTML = `
+                <div class="note-header">
+                    <div class="note-avatar" style="background: #4caf50;">You</div>
+                    <div class="note-meta">
+                        <div class="note-author">You</div>
+                        <div class="note-context">replying to ${parentAuthor}</div>
+                    </div>
+                </div>
+                <div class="note-body">${text}</div>
+                <div class="note-actions">
+                    <div class="vote-controls">
+                        <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this reply">▲</button>
+                        <span class="vote-count">0</span>
+                        <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this reply">▼</button>
+                    </div>
+                    <span class="note-action" role="button" onclick="showReplyComposer('${replyId}')">💬 Reply</span>
+                </div>
+                <div class="reply-thread" id="thread-${replyId}"></div>
+            `;
+
+            // Insert reply
+            const composer = document.getElementById(`reply-composer-${noteId}`);
+            if (composer) {
+                composer.insertAdjacentElement('beforebegin', replyCard);
+                // Clear and hide composer
+                textarea.value = '';
+                composer.classList.remove('active');
+            }
+
+            // Update reply count
+            updateReplyCount(noteId);
+            showToast('Reply posted!');
+        }
+
+        function cancelReply(noteId) {
+            const composer = document.getElementById(`reply-composer-${noteId}`);
+            if (composer) {
+                composer.classList.remove('active');
+                const textarea = composer.querySelector('textarea');
+                if (textarea) textarea.value = '';
+            }
+        }
+
+        function updateReplyCount(noteId) {
+            const noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (!noteCard) return;
+            const thread = noteCard.querySelector('.reply-thread');
+            if (!thread) return;
+            const replyCount = thread.querySelectorAll('.note-card').length;
+            const countEl = noteCard.querySelector('.note-action[onclick*="showReplyComposer"]');
+            if (countEl) {
+                countEl.textContent = `💬 ${replyCount} ${replyCount === 1 ? 'reply' : 'replies'}`;
+                countEl.setAttribute('aria-label', `${replyCount} replies`);
+            }
+        }
+
+        function getNoteAuthor(noteId) {
+            const noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (noteCard) {
+                const authorEl = noteCard.querySelector('.note-author');
+                return authorEl ? authorEl.textContent.trim() : 'author';
+            }
+            return 'author';
+        }
+
+        // Moderation tools (educator only)
+        function togglePin(noteId) {
+            const noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (!noteCard) return;
+            const btn = document.querySelector(`[onclick="togglePin('${noteId}')"]`);
+            
+            noteCard.classList.toggle('pinned');
+            if (btn) btn.classList.toggle('pinned');
+
+            // Move pinned notes to top
+            if (noteCard.classList.contains('pinned')) {
+                const content = document.getElementById('notebookContent');
+                const firstNonPinned = content.querySelector('.note-card:not(.pinned)');
+                if (firstNonPinned) {
+                    firstNonPinned.insertAdjacentElement('beforebegin', noteCard);
+                } else {
+                    const divider = content.querySelector('.notebook-section-divider');
+                    if (divider) {
+                        divider.insertAdjacentElement('afterend', noteCard);
+                    }
+                }
+            }
+            showToast(noteCard.classList.contains('pinned') ? 'Note pinned! 📌' : 'Note unpinned!');
+        }
+
+        function toggleHide(noteId) {
+            const noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (!noteCard) return;
+            const btn = document.querySelector(`[onclick="toggleHide('${noteId}')"]`);
+            
+            noteCard.classList.toggle('hidden');
+            if (btn) btn.classList.toggle('hidden');
+            showToast(noteCard.classList.contains('hidden') ? 'Note hidden from class' : 'Note visible to class');
+        }
+
+        function toggleLock(noteId) {
+            const noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (!noteCard) return;
+            const btn = document.querySelector(`[onclick="toggleLock('${noteId}')"]`);
+            
+            noteCard.classList.toggle('locked');
+            if (btn) btn.classList.toggle('locked');
+            showToast(noteCard.classList.contains('locked') ? 'Thread locked 🔒' : 'Thread unlocked 🔓');
+        }
+
+        function deleteNote(noteId) {
+            if (!confirm('Are you sure you want to delete this note? This action cannot be undone.')) return;
+            const noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (!noteCard) return;
+            
+            noteCard.style.transition = 'opacity 0.3s, transform 0.3s';
+            noteCard.style.opacity = '0';
+            noteCard.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+                noteCard.remove();
+                showToast('Note deleted 🗑️');
+            }, 300);
+        }
+
+        // Show moderation tools when in instructor view
+        function showModerationTools() {
+            const isInstructor = document.querySelector('.view-btn.active').textContent.includes('Educator');
+            document.querySelectorAll('.note-moderation').forEach(tools => {
+                tools.style.display = isInstructor ? 'flex' : 'none';
+            });
+        }
+
+        // Report/Flag functionality
+        function reportNote(noteId) {
+            const reasons = [
+                'Spam',
+                'Inappropriate content',
+                'Harassment',
+                'Off-topic',
+                'Other'
+            ];
+            
+            const reason = prompt(`Why are you reporting this note?\n\n${reasons.map((r, i) => `${i + 1}. ${r}`).join('\n')}\n\nEnter number (1-5):`);
+            if (reason && ['1', '2', '3', '4', '5'].includes(reason)) {
+                showToast('Thank you for reporting. We will review this note.');
+                // In real app, would send to moderation queue
+            }
+        }
+
+        // Q&A Mode for Spark Questions
+        let qaModeActive = false;
+        let qaAnswers = {};
+
+        function toggleQAMode() {
+            qaModeActive = !qaModeActive;
+            const sparkCard = document.getElementById('sparkCard');
+            const qaToggle = document.getElementById('qaToggle');
+            const qaStatus = document.getElementById('qaStatus');
+            const qaAnswersDiv = document.getElementById('qaAnswers');
+            const qaAnswersList = document.getElementById('qaAnswersList');
+
+            if (qaModeActive) {
+                sparkCard.classList.add('qa-mode');
+                if (qaToggle) {
+                    qaToggle.classList.add('active');
+                    qaToggle.textContent = 'Q&A Mode ✓';
+                }
+                if (qaStatus) {
+                    qaStatus.style.display = 'inline-flex';
+                    qaStatus.className = 'qa-status unanswered';
+                    qaStatus.textContent = 'Unanswered';
+                }
+                if (qaAnswersDiv) qaAnswersDiv.style.display = 'block';
+                if (qaAnswersList) qaAnswersList.innerHTML = '<div style="color: #999; font-size: 12px; padding: 12px;">No answers yet. Be the first to answer!</div>';
+                showToast('Q&A mode enabled 💡');
+            } else {
+                sparkCard.classList.remove('qa-mode');
+                if (qaToggle) {
+                    qaToggle.classList.remove('active');
+                    qaToggle.textContent = 'Q&A Mode';
+                }
+                if (qaStatus) qaStatus.style.display = 'none';
+                if (qaAnswersDiv) qaAnswersDiv.style.display = 'none';
+                showToast('Q&A mode disabled 💬');
+            }
+        }
+
+        function markAsAnswered(answerId) {
+            if (!qaModeActive) return;
+            
+            const answerCard = document.querySelector(`[data-answer-id="${answerId}"]`);
+            if (!answerCard) return;
+
+            // Remove best answer from others
+            document.querySelectorAll('.best-answer-badge').forEach(badge => badge.remove());
+
+            // Add best answer badge
+            const authorEl = answerCard.querySelector('.note-author');
+            if (authorEl && !authorEl.querySelector('.best-answer-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'best-answer-badge';
+                badge.textContent = '✓ Best Answer';
+                authorEl.appendChild(badge);
+            }
+
+            // Update status
+            const statusEl = document.getElementById('qaStatus');
+            if (statusEl) {
+                statusEl.className = 'qa-status resolved';
+                statusEl.textContent = 'Resolved';
+            }
+
+            showToast('Answer marked as best! ⭐');
+        }
+
+
+        // Show Q&A toggle for instructors
+        function showQAToggle() {
+            const isInstructor = document.querySelector('.view-btn.active').textContent.includes('Educator');
+            const qaToggle = document.getElementById('qaToggle');
+            if (qaToggle) {
+                qaToggle.style.display = isInstructor ? 'inline-block' : 'none';
+            }
+        }
+
+        // Educator "pick from content" mode (Guided prompt or Teaching Moment)
+        let instructorPickMode = null;
+        let pendingGuidedPromptHighlight = null;
+        let pendingTeachingMomentAttach = null;
+
+        function startInstructorPickMode(mode) {
+            instructorPickMode = mode;
+            setView('learner');
+            if (mode === 'guidedPrompt') {
+                showToast('Select the text in the content above to attach your prompt to. 📝');
+            } else {
+                showToast('Select the text in the content above to attach your Teaching Moment to.');
+            }
+        }
+
+        function applyPendingInstructorSelections() {
+            if (pendingGuidedPromptHighlight) {
+                const input = document.getElementById('guidedPromptHighlightText');
+                const preview = document.getElementById('guidedPromptHighlightPreview');
+                if (input) input.value = pendingGuidedPromptHighlight;
+                if (preview) {
+                    preview.textContent = pendingGuidedPromptHighlight.length > 60 ? pendingGuidedPromptHighlight.slice(0, 60) + '…' : pendingGuidedPromptHighlight;
+                    preview.classList.add('has-value');
+                }
+                pendingGuidedPromptHighlight = null;
+            }
+            if (pendingTeachingMomentAttach) {
+                const textInput = document.getElementById('teachingMomentAttachText');
+                const sectionInput = document.getElementById('teachingMomentAttachSection');
+                const preview = document.getElementById('teachingMomentAttachPreview');
+                if (textInput) textInput.value = pendingTeachingMomentAttach.text;
+                if (sectionInput) sectionInput.value = pendingTeachingMomentAttach.section;
+                if (preview) {
+                    const short = pendingTeachingMomentAttach.text.length > 50 ? pendingTeachingMomentAttach.text.slice(0, 50) + '…' : pendingTeachingMomentAttach.text;
+                    preview.textContent = pendingTeachingMomentAttach.section ? '"' + short + '" (on ' + pendingTeachingMomentAttach.section + ')' : '"' + short + '"';
+                    preview.classList.add('has-value');
+                }
+                pendingTeachingMomentAttach = null;
+            }
+        }
+
+        // View toggle (Learner vs Educator) - Enhanced with accessibility
         function setView(view) {
             const container = document.getElementById('mainContainer');
             const btns = document.querySelectorAll('.view-btn');
 
-            btns.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            btns.forEach((btn, index) => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+                if ((view === 'learner' && index === 0) || (view === 'instructor' && index === 1)) {
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-selected', 'true');
+                }
+            });
+
+            // Show/hide moderation tools and Q&A toggle based on view
+            showModerationTools();
+            showQAToggle();
 
             if (view === 'instructor') {
                 container.classList.add('instructor-view');
+                setTimeout(applyPendingInstructorSelections, 50);
             } else {
                 container.classList.remove('instructor-view');
             }
@@ -1721,32 +3980,49 @@ function factorial(n) {
         let currentTab = 'activity';
         let currentFilter = 'all';
         let originalActivityContent = '';
+        let currentSection = ''; // Set when user highlights (getContentSection); used for "This module" scope filter
 
         // Save original activity content on load
         document.addEventListener('DOMContentLoaded', function() {
             originalActivityContent = document.getElementById('notebookContent').innerHTML;
+            var postAtt = document.getElementById('postAttachment');
+            var nameEl = document.getElementById('postAttachmentName');
+            if (postAtt && nameEl) {
+                postAtt.addEventListener('change', function() {
+                    nameEl.textContent = this.files && this.files[0] ? this.files[0].name : '';
+                });
+            }
         });
 
         // Notebook tab toggle
         function setTab(tab) {
             currentTab = tab;
             const tabs = document.querySelectorAll('.notebook-tab');
-            tabs.forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+            tabs.forEach((t, index) => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+                if ((tab === 'activity' && index === 0) || (tab === 'mine' && index === 1)) {
+                    t.classList.add('active');
+                    t.setAttribute('aria-selected', 'true');
+                }
+            });
 
             renderNotebookContent();
+            updateSharedWithMeFilter();
         }
 
         function renderNotebookContent() {
             const content = document.getElementById('notebookContent');
             const searchTerm = document.getElementById('notebookSearch').value.toLowerCase();
+            var effectiveFilter = currentFilter;
+            if (currentTab === 'mine' && (currentFilter === 'instructor-replies' || (typeof currentFilter === 'string' && currentFilter.startsWith('scope-')))) effectiveFilter = 'all';
 
             if (currentTab === 'mine') {
                 let html = '';
 
                 // Section for reactions
                 const filteredReactions = userReactions.filter(r => {
-                    const matchesFilter = currentFilter === 'all' || currentFilter === r.type;
+                    const matchesFilter = effectiveFilter === 'all' || effectiveFilter === r.type;
                     const matchesSearch = !searchTerm || r.text.toLowerCase().includes(searchTerm) || r.section.toLowerCase().includes(searchTerm);
                     return matchesFilter && matchesSearch;
                 });
@@ -1770,7 +4046,7 @@ function factorial(n) {
                 }
 
                 // Section for notes (only show if filter is 'all' or 'notes')
-                if (currentFilter === 'all' || currentFilter === 'notes') {
+                if (effectiveFilter === 'all' || effectiveFilter === 'notes') {
                     const note1Matches = !searchTerm || 'base case triggers fuzzy review'.includes(searchTerm);
                     const note2Matches = !searchTerm || 'inception movie dreams function calls'.includes(searchTerm);
 
@@ -1827,10 +4103,58 @@ function factorial(n) {
 
                 content.innerHTML = html;
             } else {
-                // Activity tab - restore original content
+                // Activity tab - restore saved content when returning from Mine; otherwise leave DOM as-is
                 if (originalActivityContent) {
                     content.innerHTML = originalActivityContent;
                 }
+                applyActivitySearchAndFilter();
+            }
+        }
+
+        function applyActivitySearchAndFilter() {
+            const content = document.getElementById('notebookContent');
+            if (!content) return;
+            const searchTerm = (document.getElementById('notebookSearch').value || '').trim().toLowerCase();
+            const topLevelNotes = Array.from(content.querySelectorAll('.note-card')).filter(function(el) {
+                return !el.closest('.reply-thread');
+            });
+            var scopeMap = { 'scope-this-module': currentSection || 'The Base Case', 'scope-what-is-recursion': 'What is Recursion?', 'scope-base-case': 'The Base Case', 'scope-recursive-case': 'The Recursive Case', 'scope-example-factorial': 'Example: Factorial' };
+            var scopeFilter = scopeMap[currentFilter];
+            topLevelNotes.forEach(function(note) {
+                let showByFilter = true;
+                if (scopeFilter) {
+                    showByFilter = note.getAttribute('data-scope') === scopeFilter;
+                } else if (currentFilter === 'shared-with-me') {
+                    const visibility = note.querySelector('.note-visibility');
+                    showByFilter = visibility && visibility.textContent.includes('Shared with');
+                } else if (currentFilter === 'instructor-replies') {
+                    showByFilter = !!note.querySelector('.instructor-message, [data-instructor="true"]');
+                }
+                let showBySearch = true;
+                if (searchTerm) {
+                    const collectText = function(el) {
+                        var parts = [];
+                        var author = el.querySelector('.note-author');
+                        var body = el.querySelector('.note-body');
+                        var context = el.querySelector('.note-context');
+                        var highlight = el.querySelector('.note-highlight');
+                        if (author) parts.push(author.textContent);
+                        if (body) parts.push(body.textContent);
+                        if (context) parts.push(context.textContent);
+                        if (highlight) parts.push(highlight.textContent);
+                        return parts.join(' ').toLowerCase();
+                    };
+                    var thread = note.querySelector('.reply-thread');
+                    var cardText = collectText(note);
+                    var threadText = thread ? Array.from(thread.querySelectorAll('.note-card')).map(collectText).join(' ') : '';
+                    showBySearch = (cardText + ' ' + threadText).indexOf(searchTerm) !== -1;
+                }
+                note.style.display = showByFilter && showBySearch ? '' : 'none';
+            });
+            var divider = content.querySelector('.notebook-section-divider');
+            if (divider) {
+                var anyVisible = topLevelNotes.some(function(n) { return n.style.display !== 'none'; });
+                divider.style.display = anyVisible ? '' : 'none';
             }
         }
 
@@ -1843,22 +4167,29 @@ function factorial(n) {
         function handleSearch(term) {
             if (currentTab === 'mine') {
                 renderNotebookContent();
+            } else if (currentTab === 'activity') {
+                applyActivitySearchAndFilter();
             }
-            // For activity tab, would filter in real app
         }
 
-        // Filter functionality
+        // Filter functionality - Enhanced with accessibility
         function toggleFilterMenu() {
             const menu = document.getElementById('filterMenu');
-            menu.classList.toggle('show');
+            const btn = document.getElementById('filterBtn');
+            if (menu && btn) {
+                const isShowing = menu.classList.contains('show');
+                menu.classList.toggle('show');
+                btn.setAttribute('aria-expanded', !isShowing);
+            }
         }
 
         function setFilter(filter) {
             currentFilter = filter;
 
-            // Update UI
-            document.querySelectorAll('.filter-option').forEach(opt => opt.classList.remove('selected'));
-            event.target.classList.add('selected');
+            // Update UI: select the option that matches this filter (ignore divider which has no data-filter)
+            document.querySelectorAll('.filter-option[data-filter]').forEach(opt => {
+                opt.classList.toggle('selected', opt.getAttribute('data-filter') === filter);
+            });
 
             // Update button state
             const btn = document.querySelector('.filter-btn');
@@ -1883,9 +4214,14 @@ function factorial(n) {
             }
         });
 
-        // Toggle note visibility
-        function toggleVisibility(el) {
-            el.classList.toggle('active');
+        // Show "Shared with me" filter when there are individual shares
+        function updateSharedWithMeFilter() {
+            const filter = document.getElementById('sharedWithMeFilter');
+            // In real app, would check if user has notes shared with them
+            // For demo, show it if we're on activity tab
+            if (filter && currentTab === 'activity') {
+                filter.style.display = 'block';
+            }
         }
 
         // Text selection for highlighting
@@ -1895,6 +4231,26 @@ function factorial(n) {
 
             const selection = window.getSelection();
             const text = selection.toString().trim();
+
+            // Educator pick mode: capture selection for Guided prompt or Teaching Moment
+            if (instructorPickMode && text.length > 0) {
+                if (text.length > 500) {
+                    showToast('Selection is too long. Please select a shorter phrase (under 500 characters). 📏');
+                    return;
+                }
+                if (instructorPickMode === 'guidedPrompt') {
+                    pendingGuidedPromptHighlight = text;
+                    setView('instructor');
+                    instructorPickMode = null;
+                    showToast('Text captured. Complete your prompt below. ✅');
+                } else if (instructorPickMode === 'teachingMoment') {
+                    pendingTeachingMomentAttach = { text: text, section: getContentSection() };
+                    setView('instructor');
+                    instructorPickMode = null;
+                    showToast('Content attached. Add your title and message below.');
+                }
+                return;
+            }
 
             if (text.length > 0 && text.length < 200) {
                 const tooltip = document.getElementById('highlightTooltip');
@@ -1918,15 +4274,22 @@ function factorial(n) {
         function addNoteFromHighlight() {
             const highlight = document.getElementById('composerHighlight');
             const highlightText = document.getElementById('highlightText');
+            const scopeLine = document.getElementById('composerScope');
+            const scopeText = document.getElementById('composerScopeText');
 
+            currentSection = getContentSection();
             highlight.classList.add('active');
             highlightText.textContent = window.selectedText;
+            if (scopeLine && scopeText) {
+                scopeLine.style.display = 'block';
+                scopeText.textContent = currentSection;
+            }
             document.getElementById('highlightTooltip').style.display = 'none';
 
             document.querySelector('.composer-textarea').focus();
         }
 
-        // Instructor dashboard functions
+        // Educator dashboard functions
         function jumpToSection(sectionNum) {
             setView('learner');
             document.querySelectorAll('.view-btn')[0].classList.add('active');
@@ -1945,15 +4308,86 @@ function factorial(n) {
             btn.textContent = '✓ Featured';
             btn.style.background = '#28a745';
             btn.disabled = true;
-            alert('Question featured! It will now appear at the top of the activity feed.');
+            showToast('Contribution featured! It will now appear at the top of the activity feed. ⭐');
         }
 
-        function createSparkQuestion() {
-            alert('Spark Question created! The text you specified will now be highlighted in the content, and students will see your question when they hover and click on it.');
+        function createGuidedPrompt() {
+            const titleEl = document.getElementById('guidedPromptTitle');
+            const instructionsEl = document.getElementById('guidedPromptInstructions');
+            const typeEl = document.getElementById('guidedPromptType');
+            const showInEl = document.getElementById('guidedPromptShowIn');
+            const requiredEl = document.getElementById('guidedPromptRequired');
+            const highlightInput = document.getElementById('guidedPromptHighlightText');
+            const videoUrlEl = document.getElementById('guidedPromptVideoUrl');
+            const title = titleEl && titleEl.value ? titleEl.value.trim() : '';
+            const instructions = instructionsEl && instructionsEl.value ? instructionsEl.value.trim() : '';
+            const highlightText = highlightInput && highlightInput.value ? highlightInput.value.trim() : '';
+            const hasVideo = videoUrlEl && videoUrlEl.value && videoUrlEl.value.trim();
+            if (!title) {
+                showToast('Please enter a prompt title. 📌');
+                return;
+            }
+            const section = showInEl ? showInEl.value : 'The Base Case';
+            const promptType = typeEl ? typeEl.value : 'reflection';
+            const typeLabels = { question: 'Question', resource: 'Resource', reflection: 'Reflection', assignment: 'Assignment response', general: 'General' };
+            const required = requiredEl && requiredEl.value === 'yes';
+
+            if (highlightText) {
+                sparkQuestions[nextSparkId] = {
+                    text: instructions || title,
+                    context: highlightText,
+                    hasVideo: !!hasVideo,
+                    responseCount: 0
+                };
+                showToast('Guided prompt created with highlight! Type: ' + (typeLabels[promptType] || promptType) + '. It will appear when learners click that text. Also shown in "' + section + '"' + (required ? ' (required).' : '.'));
+                nextSparkId++;
+            } else {
+                showToast('Guided prompt created! Type: ' + (typeLabels[promptType] || promptType) + '. It will appear when learners are in "' + section + '"' + (required ? ' (required for completion).' : '.') + ' ✨');
+            }
+
+            if (titleEl) titleEl.value = '';
+            if (instructionsEl) instructionsEl.value = '';
+            if (typeEl) typeEl.value = 'reflection';
+            if (showInEl) showInEl.value = 'The Base Case';
+            if (requiredEl) requiredEl.value = 'no';
+            if (highlightInput) highlightInput.value = '';
+            if (videoUrlEl) videoUrlEl.value = '';
+            const preview = document.getElementById('guidedPromptHighlightPreview');
+            if (preview) { preview.textContent = 'No text selected'; preview.classList.remove('has-value'); }
+        }
+
+        function toggleTeachingMomentVisibility() {
+            const checkbox = document.getElementById('teachingMomentToggle');
+            const card = document.getElementById('teachingMomentCard');
+            if (card) card.style.display = checkbox && checkbox.checked ? '' : 'none';
         }
 
         function createTeachingMoment() {
-            alert('Teaching Moment posted! All students will see this highlighted in the content.');
+            const titleInput = document.getElementById('teachingMomentTitle');
+            const contentInput = document.getElementById('teachingMomentContent');
+            const attachText = document.getElementById('teachingMomentAttachText');
+            const attachSection = document.getElementById('teachingMomentAttachSection');
+            const title = titleInput && titleInput.value ? titleInput.value.trim() : '';
+            const content = contentInput && contentInput.value ? contentInput.value.trim() : '';
+            if (!title) {
+                showToast('Please enter a title for your Teaching Moment.');
+                return;
+            }
+            if (!content) {
+                showToast('Please enter the message for your Teaching Moment. 📢');
+                return;
+            }
+            var section = (attachSection && attachSection.value) ? attachSection.value : 'Content';
+            var videoUrlEl = document.getElementById('teachingMomentVideoUrl');
+            var hasVideo = videoUrlEl && videoUrlEl.value && videoUrlEl.value.trim();
+            showToast(hasVideo ? 'Teaching Moment posted with video! Learners will see it in the Activity feed. 📢' : 'Teaching Moment posted! Learners will see it in the Activity feed. 📢');
+            if (titleInput) titleInput.value = '';
+            if (contentInput) contentInput.value = '';
+            if (attachText) attachText.value = '';
+            if (attachSection) attachSection.value = '';
+            if (videoUrlEl) videoUrlEl.value = '';
+            var preview = document.getElementById('teachingMomentAttachPreview');
+            if (preview) { preview.textContent = 'No text selected'; preview.classList.remove('has-value'); }
         }
     </script>
 </body>
