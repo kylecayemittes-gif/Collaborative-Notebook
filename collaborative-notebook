@@ -2409,7 +2409,7 @@ function factorial(n) {
                         <div class="filter-menu" id="filterMenu" role="menu">
                             <div class="filter-option selected" data-filter="all" onclick="setFilter('all')" role="menuitem" tabindex="0">All</div>
                             <div class="filter-option" data-filter="notes" onclick="setFilter('notes')" role="menuitem" tabindex="0">📝 Posts</div>
-                            <div class="filter-option" data-filter="insightful" onclick="setFilter('insightful')" role="menuitem" tabindex="0">💡 Insightful</div>
+                            <div class="filter-option" data-filter="insightful" onclick="setFilter('insightful')" role="menuitem" tabindex="0">💡 Important</div>
                             <div class="filter-option" data-filter="unclear" onclick="setFilter('unclear')" role="menuitem" tabindex="0">❓ Unclear</div>
                             <div class="filter-option" data-filter="revisit" onclick="setFilter('revisit')" role="menuitem" tabindex="0">🔖 Revisit</div>
                             <div class="filter-option" data-filter="instructor-replies" onclick="setFilter('instructor-replies')" role="menuitem" tabindex="0">👩‍🏫 Educator replies</div>
@@ -2756,7 +2756,7 @@ function factorial(n) {
                                 <div class="heatmap-bar-fill" style="width: 85%; background: #f44336;"></div>
                             </div>
                             <span class="heatmap-item-text">The Base Case</span>
-                            <span class="heatmap-breakdown"><span class="heatmap-dot" title="Insightful">💡 12</span> <span class="heatmap-dot" title="Unclear">❓ 47</span> <span class="heatmap-dot" title="Revisit">🔖 8</span></span>
+                            <span class="heatmap-breakdown"><span class="heatmap-dot" title="Important">💡 12</span> <span class="heatmap-dot" title="Unclear">❓ 47</span> <span class="heatmap-dot" title="Revisit">🔖 8</span></span>
                         </div>
                         <div class="heatmap-item" onclick="jumpToSection(3)" role="button" tabindex="0" aria-label="Jump to The Recursive Case section">
                             <div class="heatmap-bar-viz">
@@ -2952,7 +2952,7 @@ function factorial(n) {
             <button class="add-note-btn" onclick="addNoteFromHighlight()" aria-label="Add note from highlighted text">+ Add Note</button>
             <div class="highlight-tooltip-divider"></div>
             <div class="highlight-reactions">
-                <button class="highlight-reaction" onclick="reactToContent('insightful')" title="Insightful" aria-label="Mark as insightful">💡</button>
+                <button class="highlight-reaction" onclick="reactToContent('insightful')" title="Important" aria-label="Mark as important">💡</button>
                 <button class="highlight-reaction" onclick="reactToContent('unclear')" title="Unclear" aria-label="Mark as unclear">❓</button>
                 <button class="highlight-reaction" onclick="reactToContent('revisit')" title="Revisit" aria-label="Bookmark to revisit">🔖</button>
             </div>
@@ -3545,7 +3545,7 @@ function factorial(n) {
 
             // Feedback messages for each reaction type
             const messages = {
-                insightful: 'Marked as insightful - added to My Notes! 💡',
+                insightful: 'Marked as important - added to My Notes! 💡',
                 unclear: 'Marked as unclear - added to My Notes! ❓',
                 revisit: 'Bookmarked to revisit - added to My Notes! 🔖'
             };
@@ -4031,7 +4031,7 @@ function factorial(n) {
                     html += '<div class="notebook-section-divider">Reactions</div>';
                     filteredReactions.forEach((reaction, index) => {
                         const icons = { insightful: '💡', unclear: '❓', revisit: '🔖' };
-                        const labels = { insightful: 'Insightful', unclear: 'Unclear', revisit: 'Revisit' };
+                        const labels = { insightful: 'Important', unclear: 'Unclear', revisit: 'Revisit' };
                         html += `
                             <div class="reaction-card" data-type="${reaction.type}">
                                 <div class="reaction-card-icon ${reaction.type}">${icons[reaction.type]}</div>
