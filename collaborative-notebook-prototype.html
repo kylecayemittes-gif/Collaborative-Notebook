@@ -1006,11 +1006,38 @@
             font-weight: 500;
         }
 
-        /* New Note Composer */
+        /* New Note Composer (collapsible) */
         .note-composer {
-            padding: 20px;
             border-top: 1px solid #e0e0e0;
             background: white;
+        }
+        .composer-toggle-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            cursor: pointer;
+            color: #666;
+            font-size: 14px;
+            user-select: none;
+            transition: background 0.15s ease;
+        }
+        .composer-toggle-bar:hover {
+            background: #f5f5f5;
+            color: #4361ee;
+        }
+        .composer-toggle-chevron {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+        .note-composer:not(.collapsed) .composer-toggle-chevron {
+            transform: rotate(180deg);
+        }
+        .composer-body {
+            padding: 0 20px 20px 20px;
+        }
+        .note-composer.collapsed .composer-body {
+            display: none;
         }
 
         .composer-highlight {
@@ -2629,8 +2656,13 @@ function factorial(n) {
                 </div>
             </div>
 
-            <!-- Note Composer -->
-            <div class="note-composer">
+            <!-- Note Composer (collapsible) -->
+            <div class="note-composer collapsed" id="noteComposerWrap">
+                <div class="composer-toggle-bar" onclick="toggleComposer()" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleComposer(); }" role="button" tabindex="0" aria-expanded="false" aria-label="Expand add to discussion" id="composerToggleBar">
+                    <span class="composer-toggle-label">✍️ Add to discussion...</span>
+                    <span class="composer-toggle-chevron" aria-hidden="true">▼</span>
+                </div>
+                <div class="composer-body">
                 <div class="composer-highlight" id="composerHighlight">
                     <strong>Highlighted:</strong> <span id="highlightText"></span>
                 </div>
@@ -2731,6 +2763,7 @@ function factorial(n) {
                         </div>
                     </div>
                     <button class="post-btn" onclick="postNote()" aria-label="Post to discussion">Post</button>
+                </div>
                 </div>
             </div>
         </div>
@@ -3174,6 +3207,17 @@ function factorial(n) {
                 shareMenu.classList.remove('show');
             }
         });
+
+        function toggleComposer() {
+            const wrap = document.getElementById('noteComposerWrap');
+            const bar = document.getElementById('composerToggleBar');
+            if (!wrap || !bar) return;
+            const isCollapsed = wrap.classList.contains('collapsed');
+            wrap.classList.toggle('collapsed', !isCollapsed);
+            bar.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
+            bar.setAttribute('aria-label', isCollapsed ? 'Collapse add to discussion' : 'Expand add to discussion');
+            if (isCollapsed) document.getElementById('noteComposer').focus();
+        }
 
         // Enhanced post note with success animation
         function postNote() {
@@ -4286,6 +4330,15 @@ function factorial(n) {
             }
             document.getElementById('highlightTooltip').style.display = 'none';
 
+            const composerWrap = document.getElementById('noteComposerWrap');
+            if (composerWrap && composerWrap.classList.contains('collapsed')) {
+                composerWrap.classList.remove('collapsed');
+                const bar = document.getElementById('composerToggleBar');
+                if (bar) {
+                    bar.setAttribute('aria-expanded', 'true');
+                    bar.setAttribute('aria-label', 'Collapse add to discussion');
+                }
+            }
             document.querySelector('.composer-textarea').focus();
         }
 
