@@ -1075,6 +1075,23 @@
             flex: 1;
             min-width: 140px;
         }
+        .composer-scope-label {
+            font-size: 12px;
+            color: #666;
+            margin-right: 4px;
+        }
+        .composer-scope-from-highlight .composer-scope-label,
+        .composer-scope-no-highlight .composer-scope-label {
+            font-weight: 500;
+        }
+        .composer-scope-inline-select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #fff;
+            min-width: 140px;
+        }
         .scope-tags {
             display: flex;
             flex-wrap: wrap;
@@ -2702,12 +2719,11 @@ function factorial(n) {
                     <strong>Highlighted:</strong> <span id="highlightText"></span>
                 </div>
                 <div class="composer-scope-row">
-                    <label class="composer-context-label">Scope (unit + subsection)</label>
-                    <div class="composer-scope-fields">
-                        <select id="composerScopeUnit" class="composer-context-select" aria-label="Unit">
-                            <option value="Unit 3: Introduction to Recursion">Unit 3: Introduction to Recursion</option>
-                        </select>
-                        <select id="composerScopeSubsection" class="composer-context-select" aria-label="Subsection">
+                    <div class="composer-scope-from-highlight" id="composerScopeFromHighlight" style="display: none;">
+                        <span class="composer-scope-label">Posting to:</span> <span id="composerScopeReadonlyText"></span>
+                    </div>
+                    <div class="composer-scope-no-highlight" id="composerScopeNoHighlight">
+                        <span class="composer-scope-label">Posting to:</span> Unit 3: Introduction to Recursion · <select id="composerScopeSubsection" class="composer-scope-inline-select" aria-label="Subsection">
                             <option value="What is Recursion?">What is Recursion?</option>
                             <option value="The Base Case">The Base Case</option>
                             <option value="The Recursive Case">The Recursive Case</option>
@@ -3286,10 +3302,10 @@ function factorial(n) {
             }
 
             const postContext = (document.getElementById('postContext') && document.getElementById('postContext').value) || 'reflection';
-            const scopeUnitEl = document.getElementById('composerScopeUnit');
+            const highlightEl = document.getElementById('composerHighlight');
             const scopeSubsectionEl = document.getElementById('composerScopeSubsection');
-            const scopeUnit = (scopeUnitEl && scopeUnitEl.value) ? scopeUnitEl.value : CURRENT_UNIT_NAME;
-            const scopeSubsection = (scopeSubsectionEl && scopeSubsectionEl.value) ? scopeSubsectionEl.value : (currentSection || UNIT_SUBSECTIONS[0]);
+            const scopeUnit = CURRENT_UNIT_NAME;
+            const scopeSubsection = (highlightEl && highlightEl.classList.contains('active') && currentSection) ? currentSection : ((scopeSubsectionEl && scopeSubsectionEl.value) ? scopeSubsectionEl.value : UNIT_SUBSECTIONS[0]);
             const fileInput = document.getElementById('postAttachment');
             const attachmentName = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0].name : '';
 
@@ -3318,7 +3334,6 @@ function factorial(n) {
                     newCard.setAttribute('data-scope-unit', scopeUnit);
                     newCard.setAttribute('data-scope-subsection', scopeSubsection);
                     newCard.setAttribute('data-context', postContext);
-                    const highlightEl = document.getElementById('composerHighlight');
                     const hasHighlight = highlightEl && highlightEl.classList.contains('active');
                     const highlightQuote = hasHighlight ? (document.getElementById('highlightText') && document.getElementById('highlightText').textContent) : '';
                     newCard.innerHTML =
@@ -3349,9 +3364,11 @@ function factorial(n) {
                     textarea.value = '';
                     const highlight = document.getElementById('composerHighlight');
                     if (highlight) highlight.classList.remove('active');
-                    const scopeUnitSelect = document.getElementById('composerScopeUnit');
-                    const scopeSubsectionSelect = document.getElementById('composerScopeSubsection');
-                    if (scopeUnitSelect) scopeUnitSelect.value = CURRENT_UNIT_NAME;
+                    var fromHighlightDiv = document.getElementById('composerScopeFromHighlight');
+                    var noHighlightDiv = document.getElementById('composerScopeNoHighlight');
+                    if (fromHighlightDiv) fromHighlightDiv.style.display = 'none';
+                    if (noHighlightDiv) noHighlightDiv.style.display = '';
+                    var scopeSubsectionSelect = document.getElementById('composerScopeSubsection');
                     if (scopeSubsectionSelect) scopeSubsectionSelect.value = UNIT_SUBSECTIONS[0];
                     const ctxSelect = document.getElementById('postContext');
                     if (ctxSelect) ctxSelect.value = 'reflection';
@@ -4386,10 +4403,12 @@ function factorial(n) {
             currentSection = getContentSection();
             highlight.classList.add('active');
             highlightText.textContent = window.selectedText;
-            var scopeUnitSelect = document.getElementById('composerScopeUnit');
-            var scopeSubsectionSelect = document.getElementById('composerScopeSubsection');
-            if (scopeUnitSelect) scopeUnitSelect.value = CURRENT_UNIT_NAME;
-            if (scopeSubsectionSelect && currentSection) scopeSubsectionSelect.value = currentSection;
+            var readonlyText = document.getElementById('composerScopeReadonlyText');
+            var fromHighlightDiv = document.getElementById('composerScopeFromHighlight');
+            var noHighlightDiv = document.getElementById('composerScopeNoHighlight');
+            if (readonlyText) readonlyText.textContent = CURRENT_UNIT_NAME + ' · ' + currentSection;
+            if (fromHighlightDiv) fromHighlightDiv.style.display = '';
+            if (noHighlightDiv) noHighlightDiv.style.display = 'none';
             document.getElementById('highlightTooltip').style.display = 'none';
 
             const composerWrap = document.getElementById('noteComposerWrap');
