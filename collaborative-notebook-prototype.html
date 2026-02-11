@@ -1063,6 +1063,35 @@
             margin-bottom: 10px;
             border-left: 3px solid #2196f3;
         }
+        .composer-scope-row {
+            margin-bottom: 12px;
+        }
+        .composer-scope-fields {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .composer-scope-fields .composer-context-select {
+            flex: 1;
+            min-width: 140px;
+        }
+        .scope-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .scope-tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #e8f4fd;
+            color: #1565c0;
+        }
+        .scope-tag.subsection {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
         .composer-context-row {
             margin-top: 10px;
             display: flex;
@@ -2434,14 +2463,15 @@ function factorial(n) {
                             <span>▾</span>
                         </button>
                         <div class="filter-menu" id="filterMenu" role="menu">
-                            <div class="filter-option selected" data-filter="all" onclick="setFilter('all')" role="menuitem" tabindex="0">All</div>
+                            <div class="filter-option" data-filter="all" onclick="setFilter('all')" role="menuitem" tabindex="0">All</div>
                             <div class="filter-option" data-filter="notes" onclick="setFilter('notes')" role="menuitem" tabindex="0">📝 Posts</div>
                             <div class="filter-option" data-filter="insightful" onclick="setFilter('insightful')" role="menuitem" tabindex="0">💡 Important</div>
                             <div class="filter-option" data-filter="unclear" onclick="setFilter('unclear')" role="menuitem" tabindex="0">❓ Unclear</div>
                             <div class="filter-option" data-filter="revisit" onclick="setFilter('revisit')" role="menuitem" tabindex="0">🔖 Revisit</div>
                             <div class="filter-option" data-filter="instructor-replies" onclick="setFilter('instructor-replies')" role="menuitem" tabindex="0">👩‍🏫 Educator replies</div>
                             <div class="filter-option filter-option-divider" role="separator">Scope</div>
-                            <div class="filter-option" data-filter="scope-this-module" onclick="setFilter('scope-this-module')" role="menuitem" tabindex="0">📍 This module</div>
+                            <div class="filter-option selected" data-filter="scope-this-unit" onclick="setFilter('scope-this-unit')" role="menuitem" tabindex="0">📍 This unit</div>
+                            <div class="filter-option" data-filter="scope-all-units" onclick="setFilter('scope-all-units')" role="menuitem" tabindex="0">All units</div>
                             <div class="filter-option" data-filter="scope-what-is-recursion" onclick="setFilter('scope-what-is-recursion')" role="menuitem" tabindex="0">What is Recursion?</div>
                             <div class="filter-option" data-filter="scope-base-case" onclick="setFilter('scope-base-case')" role="menuitem" tabindex="0">The Base Case</div>
                             <div class="filter-option" data-filter="scope-recursive-case" onclick="setFilter('scope-recursive-case')" role="menuitem" tabindex="0">The Recursive Case</div>
@@ -2488,7 +2518,7 @@ function factorial(n) {
                 <div class="notebook-section-divider">Course discussion</div>
 
                 <!-- Featured post -->
-                <div class="note-card featured" data-note-id="note-1" data-scope="The Base Case" data-context="reflection">
+                <div class="note-card featured" data-note-id="note-1" data-scope="The Base Case" data-scope-unit="Unit 3: Introduction to Recursion" data-scope-subsection="The Base Case" data-context="reflection">
                     <div class="note-connections">
                         <span class="connection-badge" onclick="showConnections('note-1')" role="button" tabindex="0" aria-label="3 related">
                             🔗 3 related
@@ -2498,7 +2528,8 @@ function factorial(n) {
                         <div class="note-avatar" aria-label="Alex Kim">AK</div>
                         <div class="note-meta">
                             <div class="note-author">Alex Kim</div>
-                            <div class="note-context">on "The Base Case" · <span class="post-context-badge reflection">Reflection</span></div>
+                            <div class="note-context"><span class="post-context-badge reflection">Reflection</span></div>
+                            <div class="scope-tags"><span class="scope-tag">Unit 3: Introduction to Recursion</span><span class="scope-tag subsection">The Base Case</span></div>
                         </div>
                         <!-- Moderation tools (educator only) -->
                         <div class="note-moderation" id="moderation-note-1" style="display: none;">
@@ -2524,7 +2555,7 @@ function factorial(n) {
                 </div>
 
                 <!-- Regular post -->
-                <div class="note-card" data-scope="What is Recursion?" data-context="resource">
+                <div class="note-card" data-scope="What is Recursion?" data-scope-unit="Unit 3: Introduction to Recursion" data-scope-subsection="What is Recursion?" data-context="resource">
                     <div class="note-connections">
                         <span class="connection-badge" onclick="showConnections('note-2')" role="button" tabindex="0" aria-label="1 related">
                             🔗 1 related
@@ -2534,7 +2565,8 @@ function factorial(n) {
                         <div class="note-avatar" style="background: #e91e63;" aria-label="Maria Johnson">MJ</div>
                         <div class="note-meta">
                             <div class="note-author">Maria Johnson</div>
-                            <div class="note-context">on "What is Recursion?" · <span class="post-context-badge resource">Resource</span></div>
+                            <div class="note-context"><span class="post-context-badge resource">Resource</span></div>
+                            <div class="scope-tags"><span class="scope-tag">Unit 3: Introduction to Recursion</span><span class="scope-tag subsection">What is Recursion?</span></div>
                         </div>
                     </div>
                     <div class="note-body">Think of recursion like Russian nesting dolls (matryoshka). Each doll contains a smaller version of itself until you reach the smallest one that's solid - that's your base case!</div>
@@ -2549,12 +2581,13 @@ function factorial(n) {
                 </div>
 
                 <!-- Post with question -->
-                <div class="note-card" data-note-id="note-2" data-scope="The Recursive Case" data-context="question">
+                <div class="note-card" data-note-id="note-2" data-scope="The Recursive Case" data-scope-unit="Unit 3: Introduction to Recursion" data-scope-subsection="The Recursive Case" data-context="question">
                     <div class="note-header">
                         <div class="note-avatar" style="background: #ff9800;" aria-label="Tyler Chen">TC</div>
                         <div class="note-meta">
                             <div class="note-author">Tyler Chen</div>
-                            <div class="note-context">on "The Recursive Case" · <span class="post-context-badge question">Question</span></div>
+                            <div class="note-context"><span class="post-context-badge question">Question</span></div>
+                            <div class="scope-tags"><span class="scope-tag">Unit 3: Introduction to Recursion</span><span class="scope-tag subsection">The Recursive Case</span></div>
                         </div>
                         <!-- Moderation tools (educator only) -->
                         <div class="note-moderation" id="moderation-note-2" style="display: none;">
@@ -2602,12 +2635,13 @@ function factorial(n) {
                 </div>
 
                 <!-- Another post -->
-                <div class="note-card" data-note-id="note-3" data-scope="Example: Factorial" data-context="resource">
+                <div class="note-card" data-note-id="note-3" data-scope="Example: Factorial" data-scope-unit="Unit 3: Introduction to Recursion" data-scope-subsection="Example: Factorial" data-context="resource">
                     <div class="note-header">
                         <div class="note-avatar" style="background: #9c27b0;" aria-label="Sarah Park">SP</div>
                         <div class="note-meta">
                             <div class="note-author">Sarah Park</div>
-                            <div class="note-context">on "Example: Factorial" · <span class="post-context-badge resource">Resource</span></div>
+                            <div class="note-context"><span class="post-context-badge resource">Resource</span></div>
+                            <div class="scope-tags"><span class="scope-tag">Unit 3: Introduction to Recursion</span><span class="scope-tag subsection">Example: Factorial</span></div>
                         </div>
                         <!-- Moderation tools (educator only) -->
                         <div class="note-moderation" id="moderation-note-3" style="display: none;">
@@ -2632,12 +2666,13 @@ function factorial(n) {
                 </div>
 
                 <!-- Example post shared with specific learners -->
-                <div class="note-card" style="border-left: 3px solid #9c27b0;" data-note-id="note-4" data-scope="The Base Case" data-context="question">
+                <div class="note-card" style="border-left: 3px solid #9c27b0;" data-note-id="note-4" data-scope="The Base Case" data-scope-unit="Unit 3: Introduction to Recursion" data-scope-subsection="The Base Case" data-context="question">
                     <div class="note-header">
                         <div class="note-avatar" style="background: #4caf50;">You</div>
                         <div class="note-meta">
                             <div class="note-author">Your post</div>
-                            <div class="note-context">on "The Base Case" · <span class="post-context-badge question">Question</span></div>
+                            <div class="note-context"><span class="post-context-badge question">Question</span></div>
+                            <div class="scope-tags"><span class="scope-tag">Unit 3: Introduction to Recursion</span><span class="scope-tag subsection">The Base Case</span></div>
                         </div>
                         <span class="note-visibility" style="background: #e1bee7; color: #7b1fa2;">👥 Shared with 2</span>
                     </div>
@@ -2666,7 +2701,20 @@ function factorial(n) {
                 <div class="composer-highlight" id="composerHighlight">
                     <strong>Highlighted:</strong> <span id="highlightText"></span>
                 </div>
-                <div class="composer-scope" id="composerScope" style="display: none;"><strong>Scope:</strong> <span id="composerScopeText"></span></div>
+                <div class="composer-scope-row">
+                    <label class="composer-context-label">Scope (unit + subsection)</label>
+                    <div class="composer-scope-fields">
+                        <select id="composerScopeUnit" class="composer-context-select" aria-label="Unit">
+                            <option value="Unit 3: Introduction to Recursion">Unit 3: Introduction to Recursion</option>
+                        </select>
+                        <select id="composerScopeSubsection" class="composer-context-select" aria-label="Subsection">
+                            <option value="What is Recursion?">What is Recursion?</option>
+                            <option value="The Base Case">The Base Case</option>
+                            <option value="The Recursive Case">The Recursive Case</option>
+                            <option value="Example: Factorial">Example: Factorial</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="composer-writing-wrap">
                     <span class="composer-writing-indicator" id="composerWritingIndicator" aria-hidden="true">✍️ Writing...</span>
                     <textarea class="composer-textarea" placeholder="✍️ Add to discussion... (highlight text in the content to attach it to your post)" aria-label="Add to discussion" id="noteComposer"></textarea>
@@ -3238,8 +3286,10 @@ function factorial(n) {
             }
 
             const postContext = (document.getElementById('postContext') && document.getElementById('postContext').value) || 'reflection';
-            const scopeLine = document.getElementById('composerScope');
-            const scope = (scopeLine && scopeLine.style.display === 'block' && document.getElementById('composerScopeText')) ? document.getElementById('composerScopeText').textContent : (currentSection || 'Content');
+            const scopeUnitEl = document.getElementById('composerScopeUnit');
+            const scopeSubsectionEl = document.getElementById('composerScopeSubsection');
+            const scopeUnit = (scopeUnitEl && scopeUnitEl.value) ? scopeUnitEl.value : CURRENT_UNIT_NAME;
+            const scopeSubsection = (scopeSubsectionEl && scopeSubsectionEl.value) ? scopeSubsectionEl.value : (currentSection || UNIT_SUBSECTIONS[0]);
             const fileInput = document.getElementById('postAttachment');
             const attachmentName = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0].name : '';
 
@@ -3264,7 +3314,9 @@ function factorial(n) {
                     const newCard = document.createElement('div');
                     newCard.className = 'note-card';
                     newCard.setAttribute('data-note-id', newId);
-                    newCard.setAttribute('data-scope', scope);
+                    newCard.setAttribute('data-scope', scopeSubsection);
+                    newCard.setAttribute('data-scope-unit', scopeUnit);
+                    newCard.setAttribute('data-scope-subsection', scopeSubsection);
                     newCard.setAttribute('data-context', postContext);
                     const highlightEl = document.getElementById('composerHighlight');
                     const hasHighlight = highlightEl && highlightEl.classList.contains('active');
@@ -3274,7 +3326,8 @@ function factorial(n) {
                         '<div class="note-avatar" style="background: #4caf50;">You</div>' +
                         '<div class="note-meta">' +
                         '<div class="note-author">You</div>' +
-                        '<div class="note-context">on "' + scope + '" · <span class="post-context-badge ' + postContext + '">' + (contextLabels[postContext] || postContext) + '</span></div>' +
+                        '<div class="note-context"><span class="post-context-badge ' + postContext + '">' + (contextLabels[postContext] || postContext) + '</span></div>' +
+                        '<div class="scope-tags"><span class="scope-tag">' + scopeUnit.replace(/</g, '&lt;') + '</span><span class="scope-tag subsection">' + scopeSubsection.replace(/</g, '&lt;') + '</span></div>' +
                         '</div></div>' +
                         (highlightQuote ? '<div class="note-highlight">"' + highlightQuote.replace(/"/g, '&quot;') + '"</div>' : '') +
                         '<div class="note-body">' + textarea.value.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
@@ -3296,8 +3349,10 @@ function factorial(n) {
                     textarea.value = '';
                     const highlight = document.getElementById('composerHighlight');
                     if (highlight) highlight.classList.remove('active');
-                    const scopeEl = document.getElementById('composerScope');
-                    if (scopeEl) scopeEl.style.display = 'none';
+                    const scopeUnitSelect = document.getElementById('composerScopeUnit');
+                    const scopeSubsectionSelect = document.getElementById('composerScopeSubsection');
+                    if (scopeUnitSelect) scopeUnitSelect.value = CURRENT_UNIT_NAME;
+                    if (scopeSubsectionSelect) scopeSubsectionSelect.value = UNIT_SUBSECTIONS[0];
                     const ctxSelect = document.getElementById('postContext');
                     if (ctxSelect) ctxSelect.value = 'reflection';
                     if (fileInput) {
@@ -4022,9 +4077,11 @@ function factorial(n) {
         ];
 
         let currentTab = 'activity';
-        let currentFilter = 'all';
+        let currentFilter = 'scope-this-unit'; // Default: contextual feed for this unit
         let originalActivityContent = '';
-        let currentSection = ''; // Set when user highlights (getContentSection); used for "This module" scope filter
+        let currentSection = ''; // Subsection when from highlight (getContentSection)
+        const CURRENT_UNIT_NAME = 'Unit 3: Introduction to Recursion';
+        const UNIT_SUBSECTIONS = ['What is Recursion?', 'The Base Case', 'The Recursive Case', 'Example: Factorial'];
 
         // Save original activity content on load
         document.addEventListener('DOMContentLoaded', function() {
@@ -4036,6 +4093,7 @@ function factorial(n) {
                     nameEl.textContent = this.files && this.files[0] ? this.files[0].name : '';
                 });
             }
+            if (currentTab === 'activity') applyActivitySearchAndFilter();
         });
 
         // Notebook tab toggle
@@ -4162,12 +4220,18 @@ function factorial(n) {
             const topLevelNotes = Array.from(content.querySelectorAll('.note-card')).filter(function(el) {
                 return !el.closest('.reply-thread');
             });
-            var scopeMap = { 'scope-this-module': currentSection || 'The Base Case', 'scope-what-is-recursion': 'What is Recursion?', 'scope-base-case': 'The Base Case', 'scope-recursive-case': 'The Recursive Case', 'scope-example-factorial': 'Example: Factorial' };
-            var scopeFilter = scopeMap[currentFilter];
+            var scopeSubsectionMap = { 'scope-what-is-recursion': 'What is Recursion?', 'scope-base-case': 'The Base Case', 'scope-recursive-case': 'The Recursive Case', 'scope-example-factorial': 'Example: Factorial' };
+            var scopeFilterSubsection = scopeSubsectionMap[currentFilter];
             topLevelNotes.forEach(function(note) {
                 let showByFilter = true;
-                if (scopeFilter) {
-                    showByFilter = note.getAttribute('data-scope') === scopeFilter;
+                if (currentFilter === 'scope-this-unit') {
+                    var noteUnit = note.getAttribute('data-scope-unit');
+                    showByFilter = (noteUnit === CURRENT_UNIT_NAME) || (!noteUnit && note.getAttribute('data-scope'));
+                } else if (currentFilter === 'scope-all-units') {
+                    showByFilter = true;
+                } else if (scopeFilterSubsection) {
+                    var sub = note.getAttribute('data-scope-subsection') || note.getAttribute('data-scope');
+                    showByFilter = sub === scopeFilterSubsection;
                 } else if (currentFilter === 'shared-with-me') {
                     const visibility = note.querySelector('.note-visibility');
                     showByFilter = visibility && visibility.textContent.includes('Shared with');
@@ -4318,16 +4382,14 @@ function factorial(n) {
         function addNoteFromHighlight() {
             const highlight = document.getElementById('composerHighlight');
             const highlightText = document.getElementById('highlightText');
-            const scopeLine = document.getElementById('composerScope');
-            const scopeText = document.getElementById('composerScopeText');
 
             currentSection = getContentSection();
             highlight.classList.add('active');
             highlightText.textContent = window.selectedText;
-            if (scopeLine && scopeText) {
-                scopeLine.style.display = 'block';
-                scopeText.textContent = currentSection;
-            }
+            var scopeUnitSelect = document.getElementById('composerScopeUnit');
+            var scopeSubsectionSelect = document.getElementById('composerScopeSubsection');
+            if (scopeUnitSelect) scopeUnitSelect.value = CURRENT_UNIT_NAME;
+            if (scopeSubsectionSelect && currentSection) scopeSubsectionSelect.value = currentSection;
             document.getElementById('highlightTooltip').style.display = 'none';
 
             const composerWrap = document.getElementById('noteComposerWrap');
