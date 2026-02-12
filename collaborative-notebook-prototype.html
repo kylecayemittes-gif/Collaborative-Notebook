@@ -1084,14 +1084,6 @@
         .composer-scope-no-highlight .composer-scope-label {
             font-weight: 500;
         }
-        .composer-scope-inline-select {
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 13px;
-            background: #fff;
-            min-width: 140px;
-        }
         .scope-tags {
             display: flex;
             flex-wrap: wrap;
@@ -2723,12 +2715,7 @@ function factorial(n) {
                         <span class="composer-scope-label">Posting to:</span> <span id="composerScopeReadonlyText"></span>
                     </div>
                     <div class="composer-scope-no-highlight" id="composerScopeNoHighlight">
-                        <span class="composer-scope-label">Posting to:</span> Unit 3: Introduction to Recursion · <select id="composerScopeSubsection" class="composer-scope-inline-select" aria-label="Subsection">
-                            <option value="What is Recursion?">What is Recursion?</option>
-                            <option value="The Base Case">The Base Case</option>
-                            <option value="The Recursive Case">The Recursive Case</option>
-                            <option value="Example: Factorial">Example: Factorial</option>
-                        </select>
+                        <span class="composer-scope-label">Posting to:</span> Unit 3: Introduction to Recursion
                     </div>
                 </div>
                 <div class="composer-writing-wrap">
@@ -3303,9 +3290,8 @@ function factorial(n) {
 
             const postContext = (document.getElementById('postContext') && document.getElementById('postContext').value) || 'reflection';
             const highlightEl = document.getElementById('composerHighlight');
-            const scopeSubsectionEl = document.getElementById('composerScopeSubsection');
             const scopeUnit = CURRENT_UNIT_NAME;
-            const scopeSubsection = (highlightEl && highlightEl.classList.contains('active') && currentSection) ? currentSection : ((scopeSubsectionEl && scopeSubsectionEl.value) ? scopeSubsectionEl.value : UNIT_SUBSECTIONS[0]);
+            const scopeSubsection = (highlightEl && highlightEl.classList.contains('active') && currentSection) ? currentSection : null;
             const fileInput = document.getElementById('postAttachment');
             const attachmentName = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0].name : '';
 
@@ -3330,9 +3316,11 @@ function factorial(n) {
                     const newCard = document.createElement('div');
                     newCard.className = 'note-card';
                     newCard.setAttribute('data-note-id', newId);
-                    newCard.setAttribute('data-scope', scopeSubsection);
+                    newCard.setAttribute('data-scope', scopeSubsection || '');
                     newCard.setAttribute('data-scope-unit', scopeUnit);
-                    newCard.setAttribute('data-scope-subsection', scopeSubsection);
+                    if (scopeSubsection) {
+                        newCard.setAttribute('data-scope-subsection', scopeSubsection);
+                    }
                     newCard.setAttribute('data-context', postContext);
                     const hasHighlight = highlightEl && highlightEl.classList.contains('active');
                     const highlightQuote = hasHighlight ? (document.getElementById('highlightText') && document.getElementById('highlightText').textContent) : '';
@@ -3342,7 +3330,7 @@ function factorial(n) {
                         '<div class="note-meta">' +
                         '<div class="note-author">You</div>' +
                         '<div class="note-context"><span class="post-context-badge ' + postContext + '">' + (contextLabels[postContext] || postContext) + '</span></div>' +
-                        '<div class="scope-tags"><span class="scope-tag">' + scopeUnit.replace(/</g, '&lt;') + '</span><span class="scope-tag subsection">' + scopeSubsection.replace(/</g, '&lt;') + '</span></div>' +
+                        '<div class="scope-tags"><span class="scope-tag">' + scopeUnit.replace(/</g, '&lt;') + '</span>' + (scopeSubsection ? '<span class="scope-tag subsection">' + scopeSubsection.replace(/</g, '&lt;') + '</span>' : '') + '</div>' +
                         '</div></div>' +
                         (highlightQuote ? '<div class="note-highlight">"' + highlightQuote.replace(/"/g, '&quot;') + '"</div>' : '') +
                         '<div class="note-body">' + textarea.value.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
@@ -3368,8 +3356,6 @@ function factorial(n) {
                     var noHighlightDiv = document.getElementById('composerScopeNoHighlight');
                     if (fromHighlightDiv) fromHighlightDiv.style.display = 'none';
                     if (noHighlightDiv) noHighlightDiv.style.display = '';
-                    var scopeSubsectionSelect = document.getElementById('composerScopeSubsection');
-                    if (scopeSubsectionSelect) scopeSubsectionSelect.value = UNIT_SUBSECTIONS[0];
                     const ctxSelect = document.getElementById('postContext');
                     if (ctxSelect) ctxSelect.value = 'reflection';
                     if (fileInput) {
