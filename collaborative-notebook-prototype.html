@@ -67,50 +67,111 @@
             border-color: #4361ee;
         }
 
-        /* Main Layout */
+        /* Main Layout - Canvas Career style: full-width header, then content + drawer row */
         .main-container {
             display: flex;
+            flex-direction: column;
             margin-top: 56px;
             height: calc(100vh - 56px);
         }
 
-        /* Learning Content Panel */
-        .content-panel {
-            flex: 1;
-            padding: 40px 56px;
-            overflow-y: auto;
-            background: white;
-            position: relative;
+        .page-header {
+            flex: none;
+            background: #f2f2f2;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 40px;
         }
 
-        .content-panel h1 {
-            font-size: 32px;
-            margin-bottom: 12px;
-            color: #1a1a2e;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+        .content-row {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .content-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+
+        .content-header-title {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            margin: 0 0 8px 0;
+            color: #2d3b45;
+            font-weight: 600;
+            letter-spacing: -0.01em;
         }
 
         .content-meta {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 32px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+            color: #6c757c;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .content-body {
+            flex: 1;
+            min-width: 0;
+            overflow-y: auto;
+            background: #fff;
+            padding: 32px 40px 40px;
+            position: relative;
+        }
+
+        /* Page action icons (Canvas Career: notebook + discussion side by side) */
+        .page-action-icons {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .page-action-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #c7cdd1;
+            border-radius: 6px;
+            background: #fff;
+            color: #2d3b45;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .page-action-icon:hover {
+            border-color: #6c757c;
+            background: #f5f5f5;
+        }
+
+        .page-action-icon.active {
+            border-color: #0374b5;
+            background: #e5f4fc;
+            color: #0374b5;
+        }
+
+        .page-action-icon svg {
+            width: 20px;
+            height: 20px;
         }
 
         .content-section {
             position: relative;
-            margin-bottom: 40px;
-            padding: 28px 24px;
-            border-radius: 12px;
-            transition: all 0.2s;
-            background: white;
+            margin-bottom: 28px;
+            padding: 20px 0;
+            border-radius: 0;
+            transition: background 0.15s;
+            background: transparent;
         }
 
         .content-section:hover {
-            background: #f8f9fa;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            background: transparent;
         }
 
         .content-section p {
@@ -403,25 +464,94 @@
             margin: 0;
         }
 
-        /* Notebook Panel */
+        /* Notebook Panel - Canvas Career style (drawer) */
         .notebook-panel {
-            width: 420px;
-            background: #fafafa;
-            border-left: 1px solid #e0e0e0;
+            width: 380px;
+            min-width: 380px;
+            max-width: 600px;
+            margin-left: 24px;
+            background: #f9fafb;
+            border-left: 1px solid #e8e8e8;
             display: flex;
             flex-direction: column;
+            transition: width 0.25s ease, min-width 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .notebook-panel:not(.drawer-open) {
+            width: 0 !important;
+            min-width: 0 !important;
+            max-width: 0;
+            margin-left: 0;
+            border-left-width: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .notebook-panel.drawer-open {
+            opacity: 1;
+            pointer-events: auto;
+            flex-shrink: 0;
+        }
+
+        .notebook-panel-resize-handle {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            cursor: col-resize;
+            z-index: 10;
+        }
+
+        .notebook-panel-resize-handle:hover,
+        .notebook-panel.resizing .notebook-panel-resize-handle {
+            background: rgba(3, 116, 181, 0.1);
+        }
+
+        .notebook-panel.resizing {
+            transition: none;
+        }
+
+        .notebook-drawer-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: #6c757c;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .notebook-drawer-close:hover {
+            background: #e8e8e8;
+            color: #2d3b45;
         }
 
         .notebook-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e0e0e0;
-            background: white;
+            padding: 16px 20px;
+            padding-right: 44px;
+            border-bottom: 1px solid #e8e8e8;
+            background: #fff;
+            position: relative;
         }
 
-        .notebook-tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 16px;
+        .notebook-drawer-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3b45;
+            margin: 0 0 12px 0;
+            padding: 0;
         }
 
         /* Search and Filter */
@@ -482,9 +612,9 @@
         }
 
         .filter-btn.active {
-            border-color: #4361ee;
-            color: #4361ee;
-            background: #f0f4ff;
+            border-color: #0374b5;
+            color: #0374b5;
+            background: #e5f4fc;
         }
 
         .filter-menu {
@@ -637,14 +767,14 @@
         }
 
         .notebook-tab.active {
-            background: #4361ee;
+            background: #0374b5;
             color: white;
         }
 
         .notebook-content {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 16px 20px;
         }
 
         /* Spark Question Card - appears in right panel */
@@ -1280,8 +1410,8 @@
             overflow-y: auto;
         }
 
-        .instructor-view .content-panel,
-        .instructor-view .notebook-panel {
+        .instructor-view .page-header,
+        .instructor-view .content-row {
             display: none;
         }
 
@@ -2413,11 +2543,25 @@
 
     <!-- Main Container -->
     <div class="main-container" id="mainContainer">
-        <!-- Learning Content Panel -->
-        <div class="content-panel" id="contentPanel">
-            <h1>Introduction to Recursion</h1>
-            <p class="content-meta">Module 3 • Lesson 2 • 15 min read</p>
+        <header class="page-header">
+            <div class="content-header-row">
+                <div class="content-header-title">
+                    <h1>Introduction to Recursion</h1>
+                    <p class="content-meta">Module 3 • Lesson 2 • 15 min read</p>
+                </div>
+                <div class="page-action-icons" role="tablist" aria-label="Notes and discussion">
+                    <button type="button" class="page-action-icon active" id="pageIconDiscussion" onclick="openNotebookDrawer('activity')" aria-label="Discussion" title="Discussion">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </button>
+                    <button type="button" class="page-action-icon" id="pageIconNotes" onclick="openNotebookDrawer('mine')" aria-label="My Notes" title="My Notes">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
 
+        <div class="content-row" id="contentRow">
+            <div class="content-body" id="contentBody">
             <!-- Real-time collaboration indicator -->
             <div class="collaboration-indicator" id="collaborationIndicator" style="display: none;">
                 <span class="presence-dot"></span>
@@ -2452,15 +2596,14 @@ function factorial(n) {
     return n * factorial(n-1); // Recursive case
 }</pre>
             </div>
-        </div>
+            </div>
 
-        <!-- Notebook Panel -->
+        <!-- Notebook Panel (drawer) -->
         <div class="notebook-panel" id="notebookPanel">
+            <div class="notebook-panel-resize-handle" id="notebookPanelResizeHandle" role="separator" aria-label="Drag to resize drawer"></div>
             <div class="notebook-header">
-                <div class="notebook-tabs" role="tablist">
-                    <button class="notebook-tab active" onclick="setTab('activity')" role="tab" aria-selected="true" aria-label="View course discussion">Discussion</button>
-                    <button class="notebook-tab" onclick="setTab('mine')" role="tab" aria-selected="false" aria-label="View my notes">My Notes</button>
-                </div>
+                <button type="button" class="notebook-drawer-close" onclick="closeNotebookDrawer()" aria-label="Close drawer">×</button>
+                <h2 class="notebook-drawer-title" id="notebookDrawerTitle" aria-live="polite">Discussion</h2>
                 <div class="notebook-search-filter">
                     <div class="notebook-search">
                         <span class="notebook-search-icon" aria-hidden="true">🔍</span>
@@ -2818,6 +2961,7 @@ function factorial(n) {
                 </div>
             </div>
         </div>
+        </div>
 
         <!-- Educator Dashboard -->
         <div class="instructor-dashboard" id="instructorDashboard">
@@ -3085,22 +3229,10 @@ function factorial(n) {
             ]
         };
 
-        // Real-time collaboration simulation
+        // Real-time collaboration simulation (hidden in prototype to avoid overlapping content)
         function updateCollaborationIndicator() {
             const indicator = document.getElementById('collaborationIndicator');
-            const text = document.getElementById('collaborationText');
-            const currentSection = getCurrentSection();
-            
-            const collaborators = mockCollaborators.filter(c => c.section === currentSection);
-            
-            if (collaborators.length > 0) {
-                const names = collaborators.map(c => c.name.split(' ')[0]).join(', ');
-                const count = collaborators.length;
-                text.textContent = `${count} learner${count > 1 ? 's' : ''} viewing this section (${names})`;
-                indicator.style.display = 'flex';
-            } else {
-                indicator.style.display = 'none';
-            }
+            if (indicator) indicator.style.display = 'none';
         }
 
         function getCurrentSection() {
@@ -3114,11 +3246,11 @@ function factorial(n) {
             return 1;
         }
 
-        // Update collaboration indicator on scroll
+        // Update collaboration indicator on scroll (content-body is the scrollable area)
         document.addEventListener('DOMContentLoaded', function() {
-            const contentPanel = document.getElementById('contentPanel');
-            if (contentPanel) {
-                contentPanel.addEventListener('scroll', updateCollaborationIndicator);
+            const contentBody = document.getElementById('contentBody');
+            if (contentBody) {
+                contentBody.addEventListener('scroll', updateCollaborationIndicator);
                 setInterval(updateCollaborationIndicator, 2000);
                 updateCollaborationIndicator();
             }
@@ -3389,10 +3521,8 @@ function factorial(n) {
             const moment = teachingMoments[momentId];
             if (!moment) return;
 
-            // Switch to Activity tab
-            setTab('activity');
-            document.querySelectorAll('.notebook-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.notebook-tab')[0].classList.add('active');
+            // Open drawer to Discussion view
+            openNotebookDrawer('activity');
 
             // Create teaching moment card in Activity feed
             const content = document.getElementById('notebookContent');
@@ -4080,6 +4210,10 @@ function factorial(n) {
         ];
 
         let currentTab = 'activity';
+        let notebookDrawerOpen = false;
+        let notebookDrawerWidth = 380;
+        const NOTEBOOK_DRAWER_MIN = 280;
+        const NOTEBOOK_DRAWER_MAX = 600;
         let currentFilter = 'scope-this-unit'; // Default: contextual feed for this unit
         let originalActivityContent = '';
         let currentSection = ''; // Subsection when from highlight (getContentSection)
@@ -4102,19 +4236,91 @@ function factorial(n) {
         // Notebook tab toggle
         function setTab(tab) {
             currentTab = tab;
-            const tabs = document.querySelectorAll('.notebook-tab');
-            tabs.forEach((t, index) => {
-                t.classList.remove('active');
-                t.setAttribute('aria-selected', 'false');
-                if ((tab === 'activity' && index === 0) || (tab === 'mine' && index === 1)) {
-                    t.classList.add('active');
-                    t.setAttribute('aria-selected', 'true');
-                }
-            });
-
+            const titleEl = document.getElementById('notebookDrawerTitle');
+            if (titleEl) {
+                titleEl.textContent = tab === 'activity' ? 'Discussion' : 'My Notes';
+            }
+            syncPageIcons();
             renderNotebookContent();
             updateSharedWithMeFilter();
         }
+
+        function syncPageIcons() {
+            const notesBtn = document.getElementById('pageIconNotes');
+            const discussionBtn = document.getElementById('pageIconDiscussion');
+            if (notesBtn) {
+                notesBtn.classList.toggle('active', currentTab === 'mine');
+                notesBtn.setAttribute('aria-selected', currentTab === 'mine' ? 'true' : 'false');
+            }
+            if (discussionBtn) {
+                discussionBtn.classList.toggle('active', currentTab === 'activity');
+                discussionBtn.setAttribute('aria-selected', currentTab === 'activity' ? 'true' : 'false');
+            }
+        }
+
+        function openNotebookDrawer(tab) {
+            const panel = document.getElementById('notebookPanel');
+            if (!panel) return;
+            if (notebookDrawerOpen && currentTab === tab) {
+                closeNotebookDrawer();
+                return;
+            }
+            notebookDrawerOpen = true;
+            panel.classList.add('drawer-open');
+            panel.style.width = notebookDrawerWidth + 'px';
+            panel.style.minWidth = notebookDrawerWidth + 'px';
+            setTab(tab);
+        }
+
+        function closeNotebookDrawer() {
+            const panel = document.getElementById('notebookPanel');
+            if (panel) {
+                notebookDrawerOpen = false;
+                panel.classList.remove('drawer-open');
+                panel.style.width = '';
+                panel.style.minWidth = '';
+            }
+        }
+
+        function applyNotebookDrawerWidth(px) {
+            const panel = document.getElementById('notebookPanel');
+            if (!panel || !panel.classList.contains('drawer-open')) return;
+            panel.style.width = px + 'px';
+            panel.style.minWidth = px + 'px';
+        }
+
+        (function initDrawerResize() {
+            const handle = document.getElementById('notebookPanelResizeHandle');
+            const panel = document.getElementById('notebookPanel');
+            if (!handle || !panel) return;
+
+            handle.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) return;
+                e.preventDefault();
+                panel.classList.add('resizing');
+                const startX = e.clientX;
+                const startWidth = notebookDrawerWidth;
+
+                function onMove(e) {
+                    const dx = startX - e.clientX;
+                    let w = Math.round(startWidth + dx);
+                    w = Math.max(NOTEBOOK_DRAWER_MIN, Math.min(NOTEBOOK_DRAWER_MAX, w));
+                    notebookDrawerWidth = w;
+                    applyNotebookDrawerWidth(w);
+                }
+
+                function onUp() {
+                    panel.classList.remove('resizing');
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onUp);
+                    document.body.style.userSelect = '';
+                }
+
+                document.body.style.userSelect = 'none';
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+            });
+        })();
 
         function renderNotebookContent() {
             const content = document.getElementById('notebookContent');
@@ -4336,7 +4542,7 @@ function factorial(n) {
         }
 
         // Text selection for highlighting
-        document.getElementById('contentPanel').addEventListener('mouseup', function(e) {
+        document.getElementById('contentBody').addEventListener('mouseup', function(e) {
             // Don't show tooltip if clicking on a spark highlight
             if (e.target.classList.contains('spark-highlight')) return;
 
