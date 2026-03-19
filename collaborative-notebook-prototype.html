@@ -821,7 +821,7 @@
             padding: 16px 20px;
         }
 
-        /* Spark Question Card - appears in right panel */
+        /* Educator Question Card - appears in right panel */
         .spark-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -1506,6 +1506,44 @@
             gap: 8px;
         }
 
+        .dashboard-card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dashboard-card-header-row h2 {
+            margin: 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-summarize-btn {
+            border: 1px solid #c7cdd1;
+            background: #fff;
+            color: #2d3b45;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s, transform 0.05s;
+            white-space: nowrap;
+        }
+
+        .ai-summarize-btn:hover {
+            background: #f8f9fa;
+            border-color: #6c757c;
+        }
+
+        .ai-summarize-btn:active {
+            transform: scale(0.99);
+        }
+
         /* Heatmap Visualization */
         .heatmap-list {
             display: flex;
@@ -1701,7 +1739,7 @@
             white-space: normal;
         }
 
-        /* Create Spark Question Form */
+        /* Create Educator Question Form */
         .create-spark-form {
             display: flex;
             flex-direction: column;
@@ -2570,7 +2608,7 @@
             padding: 6px 0;
         }
 
-        /* Q&A Mode for Spark Questions */
+        /* Q&A Mode for Educator Questions */
         .spark-card.qa-mode {
             border-left: 4px solid #28a745;
         }
@@ -2777,9 +2815,9 @@ function factorial(n) {
             </div>
 
             <div class="notebook-content" id="notebookContent">
-                <!-- Spark Question Card (hidden by default, shown when user clicks highlighted text) -->
+                <!-- Educator Question Card (hidden by default, shown when user clicks highlighted text) -->
                 <div class="spark-card" id="sparkCard" style="display: none; position: relative;" role="dialog" aria-labelledby="sparkQuestionText">
-                    <button class="spark-card-close" onclick="hideSparkQuestion()" aria-label="Close spark question">×</button>
+                    <button class="spark-card-close" onclick="hideSparkQuestion()" aria-label="Close educator question">×</button>
                     <div class="spark-card-header">
                         <span class="spark-icon" aria-hidden="true">✨</span>
                         <span>Educator Question</span>
@@ -3156,6 +3194,40 @@ function factorial(n) {
                     </div>
                 </div>
 
+                <!-- Learner contributions -->
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header-row">
+                        <h2>💬 Learner contributions</h2>
+                        <button class="ai-summarize-btn" onclick="summarizeDiscussion()" aria-label="AI Insights: extract themes and engagement from learner contributions" title="AI Insights: extract themes, common questions, and engagement levels from learner contributions.">AI Insights</button>
+                    </div>
+                    <div class="featured-list">
+                        <div class="featured-item">
+                            <span class="contribution-type question">Question</span>
+                            <div class="featured-item-text">"What happens if my recursive call doesn't make progress toward the base case?"</div>
+                            <div class="featured-item-meta">
+                                Tyler Chen • 7 upvotes
+                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <span class="contribution-type comment">Comment</span>
+                            <div class="featured-item-text">"Tracing through factorial(4) on paper step by step finally made the call stack click for me. The unwind is the key."</div>
+                            <div class="featured-item-meta">
+                                Jamie Lee • 4 upvotes
+                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <span class="contribution-type question">Question</span>
+                            <div class="featured-item-text">"When should I use recursion vs a regular loop?"</div>
+                            <div class="featured-item-meta">
+                                Robin Taylor • 12 upvotes
+                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Engagement by section (reactions breakdown) -->
                 <div class="dashboard-card">
                     <h2>📊 Engagement by section</h2>
@@ -3191,33 +3263,60 @@ function factorial(n) {
                     </div>
                 </div>
 
-                <!-- Learner contributions -->
+                <!-- Individual Student Analytics -->
                 <div class="dashboard-card">
-                    <h2>💬 Learner contributions</h2>
-                    <div class="featured-list">
-                        <div class="featured-item">
-                            <span class="contribution-type question">Question</span>
-                            <div class="featured-item-text">"What happens if my recursive call doesn't make progress toward the base case?"</div>
-                            <div class="featured-item-meta">
-                                Tyler Chen • 7 upvotes
-                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
-                            </div>
+                    <h2>👤 Individual Learner Analytics</h2>
+                    <div class="student-analytics-wrap">
+                        <table class="student-analytics-table" aria-label="Learner participation metrics">
+                            <thead>
+                                <tr>
+                                    <th>Learner</th>
+                                    <th class="num">Notes shared</th>
+                                    <th class="num">Replies</th>
+                                    <th class="num">Educator answers</th>
+                                    <th>Last active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="student-name">Alex Kim</td><td class="num">12</td><td class="num">8</td><td class="num">3</td><td>2 hours ago</td></tr>
+                                <tr><td class="student-name">Maria Johnson</td><td class="num">9</td><td class="num">14</td><td class="num">3</td><td>5 hours ago</td></tr>
+                                <tr><td class="student-name">Tyler Chen</td><td class="num">6</td><td class="num">4</td><td class="num">2</td><td>1 day ago</td></tr>
+                                <tr><td class="student-name">Sarah Park</td><td class="num">15</td><td class="num">22</td><td class="num">3</td><td>3 hours ago</td></tr>
+                                <tr><td class="student-name">Jamie Lee</td><td class="num">4</td><td class="num">2</td><td class="num">1</td><td>2 days ago</td></tr>
+                                <tr><td class="student-name">Robin Taylor</td><td class="num">8</td><td class="num">6</td><td class="num">3</td><td>6 hours ago</td></tr>
+                                <tr><td class="student-name">Jordan Blake</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td>5 days ago</td></tr>
+                                <tr><td class="student-name">Casey Morgan</td><td class="num">11</td><td class="num">9</td><td class="num">3</td><td>4 hours ago</td></tr>
+                                <tr><td class="student-name">Sam Rivera</td><td class="num">7</td><td class="num">5</td><td class="num">2</td><td>1 day ago</td></tr>
+                                <tr><td class="student-name">Riley Kim</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>—</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 12px; color: #666;">Showing 10 of 127 learners · <a href="#" style="color: #4361ee;">Export CSV</a></div>
+                </div>
+
+                <!-- Engagement Stats -->
+                <div class="dashboard-card" style="grid-column: span 2;">
+                    <h2>📊 Engagement Overview</h2>
+                    <div style="display: flex; gap: 32px; padding: 16px 0; justify-content: center; flex-wrap: wrap;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #4361ee;">73%</div>
+                            <div style="color: #666; font-size: 14px;">Learners with notes</div>
                         </div>
-                        <div class="featured-item">
-                            <span class="contribution-type comment">Comment</span>
-                            <div class="featured-item-text">"Tracing through factorial(4) on paper step by step finally made the call stack click for me. The unwind is the key."</div>
-                            <div class="featured-item-meta">
-                                Jamie Lee • 4 upvotes
-                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
-                            </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #28a745;">89%</div>
+                            <div style="color: #666; font-size: 14px;">Answered Educator Questions</div>
                         </div>
-                        <div class="featured-item">
-                            <span class="contribution-type question">Question</span>
-                            <div class="featured-item-text">"When should I use recursion vs a regular loop?"</div>
-                            <div class="featured-item-meta">
-                                Robin Taylor • 12 upvotes
-                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
-                            </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #e91e63;">156</div>
+                            <div style="color: #666; font-size: 14px;">Shared notes this week</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #ff9800;">42</div>
+                            <div style="color: #666; font-size: 14px;">Peer replies</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #9c27b0;">8</div>
+                            <div style="color: #666; font-size: 14px;">Top peer teachers</div>
                         </div>
                     </div>
                 </div>
@@ -3242,64 +3341,6 @@ function factorial(n) {
                         </div>
                         <button onclick="createTeachingMoment()" aria-label="Post teaching moment">Post Teaching Moment</button>
                     </div>
-                </div>
-
-                <!-- Engagement Stats -->
-                <div class="dashboard-card" style="grid-column: span 2;">
-                    <h2>📊 Engagement Overview</h2>
-                    <div style="display: flex; gap: 32px; padding: 16px 0;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 36px; font-weight: 700; color: #4361ee;">73%</div>
-                            <div style="color: #666; font-size: 14px;">Learners with notes</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 36px; font-weight: 700; color: #28a745;">89%</div>
-                            <div style="color: #666; font-size: 14px;">Answered Spark Questions</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 36px; font-weight: 700; color: #e91e63;">156</div>
-                            <div style="color: #666; font-size: 14px;">Shared notes this week</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 36px; font-weight: 700; color: #ff9800;">42</div>
-                            <div style="color: #666; font-size: 14px;">Peer replies</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 36px; font-weight: 700; color: #9c27b0;">8</div>
-                            <div style="color: #666; font-size: 14px;">Top peer teachers</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Individual Student Analytics -->
-                <div class="dashboard-card" style="grid-column: span 2;">
-                    <h2>👤 Individual Learner Analytics</h2>
-                    <div class="student-analytics-wrap">
-                        <table class="student-analytics-table" aria-label="Learner participation metrics">
-                            <thead>
-                                <tr>
-                                    <th>Learner</th>
-                                    <th class="num">Notes shared</th>
-                                    <th class="num">Replies</th>
-                                    <th class="num">Spark answers</th>
-                                    <th>Last active</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td class="student-name">Alex Kim</td><td class="num">12</td><td class="num">8</td><td class="num">3</td><td>2 hours ago</td></tr>
-                                <tr><td class="student-name">Maria Johnson</td><td class="num">9</td><td class="num">14</td><td class="num">3</td><td>5 hours ago</td></tr>
-                                <tr><td class="student-name">Tyler Chen</td><td class="num">6</td><td class="num">4</td><td class="num">2</td><td>1 day ago</td></tr>
-                                <tr><td class="student-name">Sarah Park</td><td class="num">15</td><td class="num">22</td><td class="num">3</td><td>3 hours ago</td></tr>
-                                <tr><td class="student-name">Jamie Lee</td><td class="num">4</td><td class="num">2</td><td class="num">1</td><td>2 days ago</td></tr>
-                                <tr><td class="student-name">Robin Taylor</td><td class="num">8</td><td class="num">6</td><td class="num">3</td><td>6 hours ago</td></tr>
-                                <tr><td class="student-name">Jordan Blake</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td>5 days ago</td></tr>
-                                <tr><td class="student-name">Casey Morgan</td><td class="num">11</td><td class="num">9</td><td class="num">3</td><td>4 hours ago</td></tr>
-                                <tr><td class="student-name">Sam Rivera</td><td class="num">7</td><td class="num">5</td><td class="num">2</td><td>1 day ago</td></tr>
-                                <tr><td class="student-name">Riley Kim</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td>—</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div style="margin-top: 12px; font-size: 12px; color: #666;">Showing 10 of 127 learners · <a href="#" style="color: #4361ee;">Export CSV</a></div>
                 </div>
             </div>
         </div>
@@ -3395,6 +3436,7 @@ function factorial(n) {
             const container = document.getElementById('mainContainer');
             if (container && !container.classList.contains('instructor-view')) {
                 openNotebookDrawer('activity');
+                showSparkQuestion(1);
             }
         });
 
@@ -3739,7 +3781,9 @@ function factorial(n) {
         // Pre-seeded educator question responses (so learners can see a thread immediately).
         const sparkInitialResponses = {
             1: [
-                { author: 'Alex Kim', text: 'Russian nesting dolls - each one contains a smaller version until you reach the solid one!' }
+                { author: 'Alex Kim', text: 'Russian nesting dolls - each one contains a smaller version until you reach the solid one!' },
+                { author: 'Maria Johnson', text: 'Looking up a word in a dictionary - sometimes the definition uses another word you need to look up, and so on...' },
+                { author: 'Tyler Chen', text: 'Mirrors facing each other - infinite reflections getting smaller!' }
             ],
             2: [
                 { author: 'Maria Johnson', text: 'Looking up a word in a dictionary - sometimes the definition uses another word you need to look up, and so on...' }
@@ -3762,6 +3806,12 @@ function factorial(n) {
             return map[sparkId] || '';
         }
 
+        // Root note wrapper inside the spark responses area.
+        // We keep it visually minimal, but it provides the anchor so "Write answer" uses the same reply composer.
+        function getSparkReplyRootId(sparkId) {
+            return `spark-root-${sparkId}`;
+        }
+
         function ensureSparkQuestionNote(sparkId) {
             const noteId = getSparkNoteId(sparkId);
             const spark = sparkQuestions[sparkId];
@@ -3777,7 +3827,7 @@ function factorial(n) {
 
             if (!noteCard) {
                 noteCard = document.createElement('div');
-                noteCard.className = 'note-card';
+                noteCard.className = 'note-card featured';
                 noteCard.setAttribute('data-note-id', noteId);
                 noteCard.setAttribute('data-scope-unit', CURRENT_UNIT_NAME);
                 noteCard.setAttribute('data-scope-subsection', sectionLabel);
@@ -3855,11 +3905,17 @@ function factorial(n) {
             return noteCard;
         }
 
+        function preloadEducatorQuestions() {
+            const ids = Object.keys(sparkQuestions).map(Number).sort((a, b) => a - b);
+            ids.forEach(id => ensureSparkQuestionNote(id));
+            if (typeof applyActivitySearchAndFilter === 'function') applyActivitySearchAndFilter();
+        }
+
         let nextSparkId = 4;
 
         let activeSparkId = null;
 
-        // Show Spark Question in right panel
+        // Show Educator Question in right panel
         function showSparkQuestion(sparkId) {
             const spark = sparkQuestions[sparkId];
             if (!spark) return;
@@ -3873,14 +3929,7 @@ function factorial(n) {
             // Update spark card content
             document.getElementById('sparkQuestionText').textContent = spark.text;
             document.getElementById('sparkContext').textContent = `"${spark.context}"`;
-            // Prefer live thread count (if it exists), otherwise fall back to seeded responses.
-            const existingNote = document.querySelector(`[data-note-id="${getSparkNoteId(sparkId)}"]`);
-            let responseCount = (sparkInitialResponses[sparkId] || []).length;
-            if (existingNote) {
-                const thread = existingNote.querySelector('.reply-thread');
-                if (thread) responseCount = thread.querySelectorAll('.note-card').length;
-            }
-            document.getElementById('sparkResponseCount').textContent = responseCount;
+            document.getElementById('sparkResponseCount').textContent = spark.responseCount;
 
             // Show/hide video option
             document.getElementById('sparkVideo').style.display = spark.hasVideo ? 'block' : 'none';
@@ -3892,8 +3941,6 @@ function factorial(n) {
             document.getElementById('notebookContent').scrollTop = 0;
 
             activeSparkId = sparkId;
-            // Create the threaded question + seeded replies immediately.
-            ensureSparkQuestionNote(sparkId);
         }
 
         function hideSparkQuestion() {
@@ -3905,32 +3952,107 @@ function factorial(n) {
         function answerSparkQuestion() {
             if (!activeSparkId) return;
 
-            const sparkNoteId = getSparkNoteId(activeSparkId);
-            ensureSparkQuestionNote(activeSparkId);
+            const rootId = getSparkReplyRootId(activeSparkId);
 
-            // Hide spark overlay so the threaded composer is the primary focus.
-            const sparkCard = document.getElementById('sparkCard');
-            if (sparkCard) sparkCard.style.display = 'none';
+            // Populate responses UI if needed (seeded responses).
+            viewSparkResponses();
 
-            showReplyComposer(sparkNoteId);
+            // Open the traditional reply composer (textarea + Reply/Cancel).
+            showReplyComposer(rootId);
 
-            const noteCard = document.querySelector(`[data-note-id="${sparkNoteId}"]`);
-            if (noteCard) noteCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const composer = document.getElementById(`reply-composer-${rootId}`);
+            if (composer) composer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function viewSparkResponses() {
             if (!activeSparkId) return;
 
-            const sparkNoteId = getSparkNoteId(activeSparkId);
-            ensureSparkQuestionNote(activeSparkId);
+            const qaAnswersDiv = document.getElementById('qaAnswers');
+            const qaAnswersList = document.getElementById('qaAnswersList');
+            const qaStatus = document.getElementById('qaStatus');
+            const responseCountEl = document.getElementById('sparkResponseCount');
 
-            // Ensure filtering reflects the newly inserted question thread.
-            if (typeof applyActivitySearchAndFilter === 'function') applyActivitySearchAndFilter();
-
-            const noteCard = document.querySelector(`[data-note-id="${sparkNoteId}"]`);
-            if (noteCard) {
-                noteCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (qaAnswersDiv) qaAnswersDiv.style.display = 'block';
+            if (qaStatus) {
+                qaStatus.style.display = 'inline-flex';
+                qaStatus.className = 'qa-status answered';
+                qaStatus.textContent = 'Answered';
             }
+
+            if (!qaAnswersList) return;
+
+            const seededResponses = sparkInitialResponses[activeSparkId] || [];
+            const rootId = getSparkReplyRootId(activeSparkId);
+
+            // Don’t duplicate: if the root wrapper exists, assume seeded responses already rendered.
+            const existingRoot = qaAnswersList.querySelector(`[data-note-id="${rootId}"]`);
+            if (existingRoot) {
+                if (responseCountEl) responseCountEl.textContent = seededResponses.length;
+                return;
+            }
+
+            qaAnswersList.innerHTML = '';
+
+            if (seededResponses.length === 0) {
+                qaAnswersList.innerHTML = '<div style="color: #999; font-size: 12px; padding: 12px;">No answers yet. Be the first to answer!</div>';
+                if (responseCountEl) responseCountEl.textContent = '0';
+                return;
+            }
+
+            // Minimal root wrapper so we can reuse showReplyComposer/postReply.
+            const rootCard = document.createElement('div');
+            rootCard.className = 'note-card';
+            rootCard.setAttribute('data-note-id', rootId);
+            rootCard.style.borderLeft = '0';
+            rootCard.style.background = 'transparent';
+            rootCard.style.boxShadow = 'none';
+            rootCard.style.border = 'none';
+            rootCard.style.padding = '0';
+
+            rootCard.innerHTML = `
+                <div class="note-author" style="display: none;">Dr. Smith</div>
+                <div class="reply-thread" id="thread-${rootId}"></div>
+            `;
+
+            qaAnswersList.appendChild(rootCard);
+
+            const thread = rootCard.querySelector(`#thread-${rootId}`);
+            const isInstructor = document.querySelector('.view-btn.active').textContent.includes('Educator');
+
+            seededResponses.forEach((resp, idx) => {
+                const answerId = `seed-answer-${activeSparkId}-${idx}`;
+                const authorInitial = resp.author ? resp.author.split(' ').map(n => n[0]).join('') : 'U';
+
+                const answerCard = document.createElement('div');
+                answerCard.className = 'note-card';
+                answerCard.setAttribute('data-note-id', answerId);
+                answerCard.style.borderLeft = '3px solid #28a745';
+
+                answerCard.innerHTML = `
+                    <div class="note-header">
+                        <div class="note-avatar" style="background: #4caf50;">${authorInitial}</div>
+                        <div class="note-meta">
+                            <div class="note-author">${resp.author}</div>
+                            <div class="note-context">answered</div>
+                        </div>
+                    </div>
+                    <div class="note-body">${resp.text}</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this answer" aria-pressed="false">▲</button>
+                            <span class="vote-count">0</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this answer" aria-pressed="false">▼</button>
+                        </div>
+                        <span class="note-action" role="button" tabindex="0" onclick="showReplyComposer('${answerId}')" aria-label="Reply to this answer">💬 Reply</span>
+                        ${isInstructor ? `<button class="mark-answered-btn" onclick="markAsAnswered('${answerId}')">✓ Mark as Best Answer</button>` : ''}
+                    </div>
+                    <div class="reply-thread" id="thread-${answerId}"></div>
+                `;
+
+                thread.appendChild(answerCard);
+            });
+
+            if (responseCountEl) responseCountEl.textContent = seededResponses.length;
         }
 
         function playSparkVideo() {
@@ -4291,7 +4413,7 @@ function factorial(n) {
             }
         }
 
-        // Q&A Mode for Spark Questions
+        // Q&A Mode for Educator Questions
         let qaModeActive = false;
         let qaAnswers = {};
 
@@ -4847,6 +4969,51 @@ function factorial(n) {
             btn.style.background = '#28a745';
             btn.disabled = true;
             showToast('Contribution pinned! It will now appear at the top of the activity feed. 📌');
+        }
+
+        // Discussion Summary Tool (demo)
+        function summarizeDiscussion() {
+            const content = document.getElementById('notebookContent');
+            if (!content) {
+                showToast('No discussion content found.');
+                return;
+            }
+
+            const topNotes = Array.from(content.querySelectorAll('.note-card')).filter(el => !el.closest('.reply-thread'));
+            const replyNotes = Array.from(content.querySelectorAll('.reply-thread .note-card'));
+
+            const text = topNotes
+                .map(n => {
+                    const body = n.querySelector('.note-body');
+                    return (body ? body.textContent : n.textContent) || '';
+                })
+                .join(' ')
+                .toLowerCase();
+
+            const themes = [];
+            const addTheme = (cond, label) => {
+                if (cond && !themes.includes(label)) themes.push(label);
+            };
+
+            addTheme(text.includes('base case') || text.includes('base-case'), 'Base case clarity');
+            addTheme(text.includes('recursive') || text.includes('recursion'), 'How recursion works & progress');
+            addTheme(text.includes('loop') || text.includes('iteration'), 'Recursion vs loops');
+            addTheme(text.includes('infinite') || text.includes('overflow') || text.includes('stack'), 'Avoiding infinite recursion');
+
+            if (themes.length === 0) themes.push('General discussion themes');
+
+            const commonQuestions = [];
+            const addQuestion = (cond, label) => {
+                if (cond && !commonQuestions.includes(label)) commonQuestions.push(label);
+            };
+
+            addQuestion(/base case/i.test(text) && /return/i.test(text), 'Does the base case need to return a value?');
+            addQuestion(/progress/i.test(text) && /base case/i.test(text), 'What if recursion doesn’t make progress?');
+            addQuestion(/recursion/i.test(text) && /loop|iteration/i.test(text), 'When should I use recursion vs loops?');
+            if (commonQuestions.length === 0) commonQuestions.push('What learners are trying to figure out most');
+
+            const engagement = `Engagement: ${topNotes.length} posts, ${replyNotes.length} replies`;
+            showToast(`Discussion Summary Tool: Themes: ${themes.join(', ')}. Common questions: ${commonQuestions.join(' / ')}. ${engagement}.`);
         }
 
         function createGuidedPrompt() {
