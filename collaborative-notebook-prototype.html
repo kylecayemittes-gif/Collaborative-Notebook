@@ -37,6 +37,12 @@
             font-size: 18px;
         }
 
+        .top-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
         .view-toggle {
             display: flex;
             gap: 8px;
@@ -159,6 +165,44 @@
         .page-action-icon svg {
             width: 20px;
             height: 20px;
+        }
+
+        /* Learner experience toggle (demo-friendly) */
+        .page-actions-column {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .learner-experience-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #6c757c;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .learner-experience-toggle input {
+            width: 16px;
+            height: 16px;
+        }
+
+        .top-nav .learner-experience-toggle {
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* When the learner toggle is OFF, hide teaching moment UI + reactions */
+        .learner-experience-hidden .teaching-moment,
+        .learner-experience-hidden .content-reaction-indicator,
+        .learner-experience-hidden .smart-suggestion,
+        .learner-experience-hidden #notebookContent .note-card.instructor-message,
+        .learner-experience-hidden #notebookContent .note-card[data-instructor="true"] {
+            display: none !important;
         }
 
         .content-section {
@@ -466,8 +510,8 @@
 
         /* Notebook Panel - Canvas Career style (drawer) */
         .notebook-panel {
-            width: 380px;
-            min-width: 380px;
+            width: 480px;
+            min-width: 480px;
             max-width: 600px;
             margin-left: 24px;
             background: #f9fafb;
@@ -924,13 +968,13 @@
         }
 
         .note-card.featured::before {
-            content: "Featured by Educator";
+            content: "📌 Pin";
             display: block;
             font-size: 11px;
             color: #4361ee;
             font-weight: 600;
             margin-bottom: 12px;
-            text-transform: uppercase;
+            text-transform: none;
             letter-spacing: 0.5px;
         }
 
@@ -1415,6 +1459,14 @@
             display: none;
         }
 
+        .educator-only {
+            display: none;
+        }
+
+        .instructor-view .educator-only {
+            display: flex;
+        }
+
         .instructor-view .instructor-dashboard {
             display: block;
             flex: 1;
@@ -1859,6 +1911,86 @@
         .stats-badge.danger {
             background: #f8d7da;
             color: #721c24;
+        }
+
+        /* Educator: Guided prompt authoring (simplified) */
+        .guided-prompt-actions {
+            display: flex;
+            gap: 10px;
+            margin: 14px 0 10px;
+            flex-wrap: wrap;
+        }
+
+        .guided-prompt-action-btn {
+            border: 1px solid #c7cdd1;
+            background: #fff;
+            color: #2d3b45;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: border-color 0.15s, background 0.15s, transform 0.05s;
+        }
+
+        .guided-prompt-action-btn:hover {
+            background: #f8f9fa;
+            border-color: #6c757c;
+        }
+
+        .guided-prompt-action-btn:active {
+            transform: scale(0.99);
+        }
+
+        .guided-prompt-action-btn.primary {
+            border-color: #0374b5;
+            color: #0374b5;
+            background: #e5f4fc;
+        }
+
+        .guided-prompt-form {
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .guided-prompt-help {
+            font-size: 12px;
+            color: #6c757c;
+            margin: 6px 0 10px;
+            line-height: 1.4;
+        }
+
+        .guided-prompt-advanced summary {
+            cursor: pointer;
+            font-size: 12px;
+            color: #0374b5;
+            font-weight: 600;
+            margin-top: 8px;
+            list-style: none;
+        }
+
+        .guided-prompt-advanced summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .guided-prompt-inline-attach {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .guided-prompt-required {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #2d3b45;
         }
 
         /* Section divider in notebook */
@@ -2534,7 +2666,17 @@
 <body>
     <!-- Top Navigation -->
     <nav class="top-nav" role="navigation" aria-label="Main navigation">
-        <div class="logo">Canvas Career</div>
+        <div class="top-nav-left">
+            <div class="logo">Canvas Career</div>
+            <label class="learner-experience-toggle" title="Hide teaching moments, live reactions, and similar reaction prompts">
+                <input type="checkbox" id="learnerExperienceToggle" onchange="toggleLearnerExperienceUI()" aria-label="Show teaching moments, live reactions, and similar reactions">
+                <span>Show teaching & reactions</span>
+            </label>
+            <label class="learner-experience-toggle educator-only" title="Show or hide Teaching Moment authoring UI">
+                <input type="checkbox" id="teachingMomentToggle" onchange="toggleTeachingMomentVisibility()" aria-label="Show Teaching Moment section">
+                <span>Show teaching moments</span>
+            </label>
+        </div>
         <div class="view-toggle" role="tablist">
             <button class="view-btn active" onclick="setView('learner')" role="tab" aria-selected="true" aria-label="Switch to learner view">Learner View</button>
             <button class="view-btn" onclick="setView('instructor')" role="tab" aria-selected="false" aria-label="Switch to educator dashboard">Educator Dashboard</button>
@@ -2546,7 +2688,7 @@
         <header class="page-header">
             <div class="content-header-row">
                 <div class="content-header-title">
-                    <h1>Introduction to Recursion</h1>
+                    <h1>Unit 3: Introduction to Recursion</h1>
                     <p class="content-meta">Module 3 • Lesson 2 • 15 min read</p>
                 </div>
                 <div class="page-action-icons" role="tablist" aria-label="Notes and discussion">
@@ -2968,13 +3110,52 @@ function factorial(n) {
             <div class="dashboard-header">
                 <h1>Educator Dashboard</h1>
                 <p>Module 3: Introduction to Recursion • 127 learners enrolled</p>
-                <label class="dashboard-toggle" style="display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; color: #666; cursor: pointer;">
-                    <input type="checkbox" id="teachingMomentToggle" onchange="toggleTeachingMomentVisibility()" aria-label="Show Teaching Moment section">
-                    <span>Show Teaching Moment</span>
-                </label>
             </div>
 
             <div class="dashboard-grid">
+                <!-- Discussion prompts -->
+                <div class="dashboard-card">
+                    <h2>💬 Discussion prompts</h2>
+                    <p class="dashboard-card-desc">Create educator prompts that show up as discussion threads inside a section’s feed.</p>
+
+                    <div class="guided-prompt-form educator-writing-form" id="discussionPromptForm">
+                        <span class="educator-writing-indicator" aria-hidden="true">✍️ Writing...</span>
+                        <div class="guided-prompt-help">Appears in a section’s discussion feed. Great for weekly reflection, checkpoints, or required participation.</div>
+
+                        <label class="prompt-label" for="guidedPromptShowIn">Show in</label>
+                        <select id="guidedPromptShowIn" class="prompt-select" aria-label="Section where prompt appears">
+                            <option value="What is Recursion?">What is Recursion?</option>
+                            <option value="The Base Case">The Base Case</option>
+                            <option value="The Recursive Case">The Recursive Case</option>
+                            <option value="Example: Factorial">Example: Factorial</option>
+                        </select>
+
+                        <label class="prompt-label" for="guidedPromptText">Prompt</label>
+                        <textarea id="guidedPromptText" class="prompt-textarea" placeholder="✍️ Ask a question or reflection prompt learners will respond to..." rows="3"></textarea>
+
+                        <label class="guided-prompt-required">
+                            <input type="checkbox" id="guidedPromptRequiredChk" aria-label="Counts toward completion">
+                            <span>Counts toward completion</span>
+                        </label>
+
+                        <details class="guided-prompt-advanced">
+                            <summary>Advanced</summary>
+                            <label class="prompt-label" for="guidedPromptType">Response type</label>
+                            <select id="guidedPromptType" class="prompt-select" aria-label="Type of response">
+                                <option value="reflection" selected>Reflection</option>
+                                <option value="question">Question</option>
+                                <option value="resource">Resource</option>
+                                <option value="assignment">Assignment response</option>
+                                <option value="general">General</option>
+                            </select>
+                            <label class="prompt-label" for="guidedPromptVideoUrl">Optional video</label>
+                            <input type="url" id="guidedPromptVideoUrl" class="input-url prompt-input" placeholder="https://... (paste video link)" aria-label="Video URL for explanation">
+                        </details>
+
+                        <button type="button" class="prompt-submit-btn" onclick="createGuidedPrompt()" aria-label="Create discussion prompt">Create prompt</button>
+                    </div>
+                </div>
+
                 <!-- Engagement by section (reactions breakdown) -->
                 <div class="dashboard-card">
                     <h2>📊 Engagement by section</h2>
@@ -3010,7 +3191,7 @@ function factorial(n) {
                     </div>
                 </div>
 
-                <!-- Student contributions to feature -->
+                <!-- Learner contributions -->
                 <div class="dashboard-card">
                     <h2>💬 Learner contributions</h2>
                     <div class="featured-list">
@@ -3019,7 +3200,7 @@ function factorial(n) {
                             <div class="featured-item-text">"What happens if my recursive call doesn't make progress toward the base case?"</div>
                             <div class="featured-item-meta">
                                 Tyler Chen • 7 upvotes
-                                <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Feature this contribution">⭐ Feature</button>
+                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
                             </div>
                         </div>
                         <div class="featured-item">
@@ -3027,7 +3208,7 @@ function factorial(n) {
                             <div class="featured-item-text">"Tracing through factorial(4) on paper step by step finally made the call stack click for me. The unwind is the key."</div>
                             <div class="featured-item-meta">
                                 Jamie Lee • 4 upvotes
-                                <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Feature this contribution">⭐ Feature</button>
+                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
                             </div>
                         </div>
                         <div class="featured-item">
@@ -3035,59 +3216,9 @@ function factorial(n) {
                             <div class="featured-item-text">"When should I use recursion vs a regular loop?"</div>
                             <div class="featured-item-meta">
                                 Robin Taylor • 12 upvotes
-                                <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Feature this contribution">⭐ Feature</button>
+                                    <button class="feature-btn" onclick="featureQuestion(this)" aria-label="Pin this contribution">📌 Pin</button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Guided prompts (section-based and/or attach to highlighted text - merged with Spark Questions) -->
-                <div class="dashboard-card">
-                    <h2>📌 Guided prompts</h2>
-                    <p class="dashboard-card-desc">Create prompts that appear in a section and optionally on specific highlighted text. Choose the type of response (Question, Resource, Reflection, etc.). Attach to text to show the prompt when learners click that highlight (like a spark question).</p>
-                    <div class="prompt-form educator-writing-form">
-                        <span class="educator-writing-indicator" aria-hidden="true">✍️ Writing...</span>
-                        <label class="prompt-label">Prompt title</label>
-                        <input type="text" id="guidedPromptTitle" class="prompt-input" placeholder="✍️ e.g. Reflect on the base case">
-                        <label class="prompt-label">Prompt type</label>
-                        <select id="guidedPromptType" class="prompt-select" aria-label="Type of response (Question, Resource, Reflection, etc.)">
-                            <option value="question">Question</option>
-                            <option value="resource">Resource</option>
-                            <option value="reflection">Reflection</option>
-                            <option value="assignment">Assignment response</option>
-                            <option value="general">General</option>
-                        </select>
-                        <label class="prompt-label">Instructions</label>
-                        <textarea id="guidedPromptInstructions" class="prompt-textarea" placeholder="✍️ What should learners do? (e.g. Share one example from your experience where a 'base case' stops a process.)" rows="3"></textarea>
-                        <div class="prompt-row">
-                            <div class="prompt-field">
-                                <label class="prompt-label" for="guidedPromptShowIn">Show in</label>
-                                <select id="guidedPromptShowIn" class="prompt-select" aria-label="Section where prompt appears">
-                                    <option value="What is Recursion?">What is Recursion?</option>
-                                    <option value="The Base Case">The Base Case</option>
-                                    <option value="The Recursive Case">The Recursive Case</option>
-                                    <option value="Example: Factorial">Example: Factorial</option>
-                                </select>
-                            </div>
-                            <div class="prompt-field">
-                                <label class="prompt-label">Required</label>
-                                <select id="guidedPromptRequired" class="prompt-select" aria-label="Required for completion">
-                                    <option value="no">No</option>
-                                    <option value="yes">Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="pick-from-content-row">
-                            <label class="pick-label">Attach to text in content (optional)</label>
-                            <button type="button" class="pick-from-content-btn" onclick="startInstructorPickMode('guidedPrompt')" aria-label="Select text in content to attach prompt to">Select text in content</button>
-                            <span id="guidedPromptHighlightPreview" class="pick-preview">No text selected</span>
-                            <input type="hidden" id="guidedPromptHighlightText" aria-label="Selected text for highlight">
-                        </div>
-                        <div class="pick-from-content-row">
-                            <label class="pick-label">Optional video explanation</label>
-                            <input type="url" id="guidedPromptVideoUrl" class="input-url prompt-input" placeholder="https://... (paste video link)" aria-label="Video URL for explanation">
-                        </div>
-                        <button type="button" class="prompt-submit-btn" onclick="createGuidedPrompt()" aria-label="Create guided prompt">Create prompt</button>
                     </div>
                 </div>
 
@@ -3177,7 +3308,7 @@ function factorial(n) {
     <!-- Highlight Tooltip -->
     <div class="highlight-tooltip" id="highlightTooltip">
             <div class="highlight-tooltip-actions">
-            <button class="add-note-btn" onclick="addNoteFromHighlight()" aria-label="Add note from highlighted text">+ Add Note</button>
+            <button class="add-note-btn" onclick="addNoteFromHighlight()" aria-label="Post to discussion from highlighted text">+ Post</button>
             <div class="highlight-tooltip-divider"></div>
             <div class="highlight-reactions">
                 <button class="highlight-reaction" onclick="reactToContent('insightful')" title="Important" aria-label="Mark as important">💡</button>
@@ -3258,6 +3389,13 @@ function factorial(n) {
             // Initialize moderation tools and Q&A toggle visibility
             showModerationTools();
             showQAToggle();
+            toggleLearnerExperienceUI(); // Default OFF: hide teaching moments + reactions
+
+            // Demo convenience: open Discussion drawer by default (learner view)
+            const container = document.getElementById('mainContainer');
+            if (container && !container.classList.contains('instructor-view')) {
+                openNotebookDrawer('activity');
+            }
         });
 
         // Smart suggestions
@@ -3597,6 +3735,126 @@ function factorial(n) {
                 responseCount: 15
             }
         };
+
+        // Pre-seeded educator question responses (so learners can see a thread immediately).
+        const sparkInitialResponses = {
+            1: [
+                { author: 'Alex Kim', text: 'Russian nesting dolls - each one contains a smaller version until you reach the solid one!' }
+            ],
+            2: [
+                { author: 'Maria Johnson', text: 'Looking up a word in a dictionary - sometimes the definition uses another word you need to look up, and so on...' }
+            ],
+            3: [
+                { author: 'Tyler Chen', text: 'Mirrors facing each other - infinite reflections getting smaller!' }
+            ]
+        };
+
+        function getSparkNoteId(sparkId) {
+            return `spark-note-${sparkId}`;
+        }
+
+        function getSparkSectionLabel(sparkId) {
+            const map = {
+                1: 'What is Recursion?',
+                2: 'The Base Case',
+                3: 'The Recursive Case'
+            };
+            return map[sparkId] || '';
+        }
+
+        function ensureSparkQuestionNote(sparkId) {
+            const noteId = getSparkNoteId(sparkId);
+            const spark = sparkQuestions[sparkId];
+            if (!spark) return null;
+
+            const content = document.getElementById('notebookContent');
+            const sparkCard = document.getElementById('sparkCard');
+            if (!content) return null;
+
+            let noteCard = document.querySelector(`[data-note-id="${noteId}"]`);
+            const sectionLabel = getSparkSectionLabel(sparkId);
+            const seededResponses = sparkInitialResponses[sparkId] || [];
+
+            if (!noteCard) {
+                noteCard = document.createElement('div');
+                noteCard.className = 'note-card';
+                noteCard.setAttribute('data-note-id', noteId);
+                noteCard.setAttribute('data-scope-unit', CURRENT_UNIT_NAME);
+                noteCard.setAttribute('data-scope-subsection', sectionLabel);
+                noteCard.setAttribute('data-context', 'question');
+
+                const initialCount = seededResponses.length;
+                noteCard.innerHTML = `
+                    <div class="note-header">
+                        <div class="note-avatar" style="background: #4361ee;">DS</div>
+                        <div class="note-meta">
+                            <div class="note-author">Dr. Smith</div>
+                            <div class="note-context"><span class="post-context-badge question">Question</span></div>
+                            <div class="scope-tags"><span class="scope-tag">Unit 3: Introduction to Recursion</span><span class="scope-tag subsection">${sectionLabel}</span></div>
+                        </div>
+                    </div>
+                    <div class="note-highlight">"${spark.text}"</div>
+                    <div class="note-body">${spark.context}</div>
+                    <div class="note-actions">
+                        <div class="vote-controls">
+                            <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this question" aria-pressed="false">▲</button>
+                            <span class="vote-count">0</span>
+                            <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this question" aria-pressed="false">▼</button>
+                        </div>
+                        <span class="note-action" role="button" tabindex="0" onclick="showReplyComposer('${noteId}')" aria-label="${initialCount} replies">💬 ${initialCount} ${initialCount === 1 ? 'reply' : 'replies'}</span>
+                    </div>
+                    <div class="reply-thread" id="thread-${noteId}"></div>
+                `;
+
+                if (sparkCard && sparkCard.style.display !== 'none') {
+                    sparkCard.insertAdjacentElement('afterend', noteCard);
+                } else {
+                    const divider = content.querySelector('.notebook-section-divider');
+                    if (divider) divider.insertAdjacentElement('afterend', noteCard);
+                    else content.insertBefore(noteCard, content.firstChild);
+                }
+            }
+
+            // Only seed responses once.
+            const thread = noteCard.querySelector('.reply-thread');
+            if (thread && !thread.querySelector('.note-card')) {
+                seededResponses.forEach((resp, idx) => {
+                    const replyId = `spark-reply-${sparkId}-${idx}`;
+                    const authorInitial = resp.author ? resp.author.split(' ').map(n => n[0]).join('') : 'U';
+                    const replyCard = document.createElement('div');
+                    replyCard.className = 'note-card';
+                    replyCard.setAttribute('data-note-id', replyId);
+                    replyCard.style.borderLeft = '3px solid #4361ee';
+
+                    replyCard.innerHTML = `
+                        <div class="note-header">
+                            <div class="note-avatar" style="background: #4caf50;">${authorInitial}</div>
+                            <div class="note-meta">
+                                <div class="note-author">${resp.author}</div>
+                                <div class="note-context">answered</div>
+                            </div>
+                        </div>
+                        <div class="note-body">${resp.text}</div>
+                        <div class="note-actions">
+                            <div class="vote-controls">
+                                <button class="vote-btn upvote" onclick="vote(this, 'up')" aria-label="Upvote this reply" aria-pressed="false">▲</button>
+                                <span class="vote-count">0</span>
+                                <button class="vote-btn downvote" onclick="vote(this, 'down')" aria-label="Downvote this reply" aria-pressed="false">▼</button>
+                            </div>
+                            <span class="note-action" role="button" tabindex="0" onclick="showReplyComposer('${replyId}')" aria-label="Reply to this response">💬 Reply</span>
+                        </div>
+                        <div class="reply-thread" id="thread-${replyId}"></div>
+                    `;
+
+                    thread.appendChild(replyCard);
+                });
+            }
+
+            // Keep count text in sync with seeded + user replies.
+            if (typeof updateReplyCount === 'function') updateReplyCount(noteId);
+            return noteCard;
+        }
+
         let nextSparkId = 4;
 
         let activeSparkId = null;
@@ -3615,7 +3873,14 @@ function factorial(n) {
             // Update spark card content
             document.getElementById('sparkQuestionText').textContent = spark.text;
             document.getElementById('sparkContext').textContent = `"${spark.context}"`;
-            document.getElementById('sparkResponseCount').textContent = spark.responseCount;
+            // Prefer live thread count (if it exists), otherwise fall back to seeded responses.
+            const existingNote = document.querySelector(`[data-note-id="${getSparkNoteId(sparkId)}"]`);
+            let responseCount = (sparkInitialResponses[sparkId] || []).length;
+            if (existingNote) {
+                const thread = existingNote.querySelector('.reply-thread');
+                if (thread) responseCount = thread.querySelectorAll('.note-card').length;
+            }
+            document.getElementById('sparkResponseCount').textContent = responseCount;
 
             // Show/hide video option
             document.getElementById('sparkVideo').style.display = spark.hasVideo ? 'block' : 'none';
@@ -3627,6 +3892,8 @@ function factorial(n) {
             document.getElementById('notebookContent').scrollTop = 0;
 
             activeSparkId = sparkId;
+            // Create the threaded question + seeded replies immediately.
+            ensureSparkQuestionNote(sparkId);
         }
 
         function hideSparkQuestion() {
@@ -3636,69 +3903,34 @@ function factorial(n) {
         }
 
         function answerSparkQuestion() {
-            // Check if Q&A mode is active
-            if (qaModeActive) {
-                const answer = prompt('Write your answer:');
-                if (answer) {
-                    const answerId = `answer-${Date.now()}`;
-                    const qaAnswersList = document.getElementById('qaAnswersList');
-                    if (qaAnswersList) {
-                        // Clear "no answers" message
-                        const noAnswersMsg = qaAnswersList.querySelector('div[style*="color: #999"]');
-                        if (noAnswersMsg) {
-                            qaAnswersList.innerHTML = '';
-                        }
-                        
-                        const answerCard = document.createElement('div');
-                        answerCard.className = 'note-card';
-                        answerCard.setAttribute('data-answer-id', answerId);
-                        answerCard.style.borderLeft = '3px solid #28a745';
-                        const isInstructor = document.querySelector('.view-btn.active').textContent.includes('Educator');
-                        answerCard.innerHTML = `
-                            <div class="note-header">
-                                <div class="note-avatar" style="background: #4caf50;">You</div>
-                                <div class="note-meta">
-                                    <div class="note-author">You</div>
-                                    <div class="note-context">answered</div>
-                                </div>
-                            </div>
-                            <div class="note-body">${answer}</div>
-                            <div class="note-actions">
-                                <div class="vote-controls">
-                                    <button class="vote-btn upvote" onclick="vote(this, 'up')">▲</button>
-                                    <span class="vote-count">0</span>
-                                    <button class="vote-btn downvote" onclick="vote(this, 'down')">▼</button>
-                                </div>
-                                ${isInstructor ? `<button class="mark-answered-btn" onclick="markAsAnswered('${answerId}')">✓ Mark as Best Answer</button>` : ''}
-                            </div>
-                        `;
-                        qaAnswersList.appendChild(answerCard);
-                        
-                        // Update status
-                        const statusEl = document.getElementById('qaStatus');
-                        if (statusEl) {
-                            statusEl.className = 'qa-status answered';
-                            statusEl.textContent = 'Answered';
-                        }
-                        
-                        showToast('Your answer has been submitted! ✅');
-                    }
-                }
-            } else {
-                // Original behavior for non-Q&A mode
-                const answer = prompt('Write your answer:');
-                if (answer) {
-                    showToast('Your answer has been submitted! You can now see how others answered. ✅');
-                    // In real app, would add to responses and show them
-                }
-            }
+            if (!activeSparkId) return;
+
+            const sparkNoteId = getSparkNoteId(activeSparkId);
+            ensureSparkQuestionNote(activeSparkId);
+
+            // Hide spark overlay so the threaded composer is the primary focus.
+            const sparkCard = document.getElementById('sparkCard');
+            if (sparkCard) sparkCard.style.display = 'none';
+
+            showReplyComposer(sparkNoteId);
+
+            const noteCard = document.querySelector(`[data-note-id="${sparkNoteId}"]`);
+            if (noteCard) noteCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function viewSparkResponses() {
-            alert('Peer responses:\n\n' +
-                '🧑 Alex: "Russian nesting dolls - each one contains a smaller version until you reach the solid one!"\n\n' +
-                '👩 Maria: "Looking up a word in a dictionary - sometimes the definition uses another word you need to look up, and so on..."\n\n' +
-                '🧑 Tyler: "Mirrors facing each other - infinite reflections getting smaller!"');
+            if (!activeSparkId) return;
+
+            const sparkNoteId = getSparkNoteId(activeSparkId);
+            ensureSparkQuestionNote(activeSparkId);
+
+            // Ensure filtering reflects the newly inserted question thread.
+            if (typeof applyActivitySearchAndFilter === 'function') applyActivitySearchAndFilter();
+
+            const noteCard = document.querySelector(`[data-note-id="${sparkNoteId}"]`);
+            if (noteCard) {
+                noteCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         function playSparkVideo() {
@@ -4135,32 +4367,17 @@ function factorial(n) {
             }
         }
 
-        // Educator "pick from content" mode (Guided prompt or Teaching Moment)
+        // Educator "pick from content" mode (Teaching Moment)
         let instructorPickMode = null;
-        let pendingGuidedPromptHighlight = null;
         let pendingTeachingMomentAttach = null;
 
         function startInstructorPickMode(mode) {
             instructorPickMode = mode;
             setView('learner');
-            if (mode === 'guidedPrompt') {
-                showToast('Select the text in the content above to attach your prompt to. 📝');
-            } else {
-                showToast('Select the text in the content above to attach your Teaching Moment to.');
-            }
+            showToast('Select the text in the content above to attach your Teaching Moment to.');
         }
 
         function applyPendingInstructorSelections() {
-            if (pendingGuidedPromptHighlight) {
-                const input = document.getElementById('guidedPromptHighlightText');
-                const preview = document.getElementById('guidedPromptHighlightPreview');
-                if (input) input.value = pendingGuidedPromptHighlight;
-                if (preview) {
-                    preview.textContent = pendingGuidedPromptHighlight.length > 60 ? pendingGuidedPromptHighlight.slice(0, 60) + '…' : pendingGuidedPromptHighlight;
-                    preview.classList.add('has-value');
-                }
-                pendingGuidedPromptHighlight = null;
-            }
             if (pendingTeachingMomentAttach) {
                 const textInput = document.getElementById('teachingMomentAttachText');
                 const sectionInput = document.getElementById('teachingMomentAttachSection');
@@ -4211,7 +4428,7 @@ function factorial(n) {
 
         let currentTab = 'activity';
         let notebookDrawerOpen = false;
-        let notebookDrawerWidth = 380;
+        let notebookDrawerWidth = 480;
         const NOTEBOOK_DRAWER_MIN = 280;
         const NOTEBOOK_DRAWER_MAX = 600;
         let currentFilter = 'scope-this-unit'; // Default: contextual feed for this unit
@@ -4549,18 +4766,13 @@ function factorial(n) {
             const selection = window.getSelection();
             const text = selection.toString().trim();
 
-            // Educator pick mode: capture selection for Guided prompt or Teaching Moment
+            // Educator pick mode: capture selection for Teaching Moment
             if (instructorPickMode && text.length > 0) {
                 if (text.length > 500) {
                     showToast('Selection is too long. Please select a shorter phrase (under 500 characters). 📏');
                     return;
                 }
-                if (instructorPickMode === 'guidedPrompt') {
-                    pendingGuidedPromptHighlight = text;
-                    setView('instructor');
-                    instructorPickMode = null;
-                    showToast('Text captured. Complete your prompt below. ✅');
-                } else if (instructorPickMode === 'teachingMoment') {
+                if (instructorPickMode === 'teachingMoment') {
                     pendingTeachingMomentAttach = { text: text, section: getContentSection() };
                     setView('instructor');
                     instructorPickMode = null;
@@ -4631,61 +4843,55 @@ function factorial(n) {
         }
 
         function featureQuestion(btn) {
-            btn.textContent = '✓ Featured';
+            btn.textContent = '✓ Pinned';
             btn.style.background = '#28a745';
             btn.disabled = true;
-            showToast('Contribution featured! It will now appear at the top of the activity feed. ⭐');
+            showToast('Contribution pinned! It will now appear at the top of the activity feed. 📌');
         }
 
         function createGuidedPrompt() {
-            const titleEl = document.getElementById('guidedPromptTitle');
-            const instructionsEl = document.getElementById('guidedPromptInstructions');
-            const typeEl = document.getElementById('guidedPromptType');
             const showInEl = document.getElementById('guidedPromptShowIn');
-            const requiredEl = document.getElementById('guidedPromptRequired');
-            const highlightInput = document.getElementById('guidedPromptHighlightText');
-            const videoUrlEl = document.getElementById('guidedPromptVideoUrl');
-            const title = titleEl && titleEl.value ? titleEl.value.trim() : '';
-            const instructions = instructionsEl && instructionsEl.value ? instructionsEl.value.trim() : '';
-            const highlightText = highlightInput && highlightInput.value ? highlightInput.value.trim() : '';
-            const hasVideo = videoUrlEl && videoUrlEl.value && videoUrlEl.value.trim();
-            if (!title) {
-                showToast('Please enter a prompt title. 📌');
+            const section = showInEl ? showInEl.value : 'The Base Case';
+
+            const typeLabels = { question: 'Question', resource: 'Resource', reflection: 'Reflection', assignment: 'Assignment response', general: 'General' };
+
+            const textEl = document.getElementById('guidedPromptText');
+            const promptText = textEl && textEl.value ? textEl.value.trim() : '';
+            if (!promptText) {
+                showToast('Please write the prompt text. ✍️');
                 return;
             }
-            const section = showInEl ? showInEl.value : 'The Base Case';
+
+            const requiredChk = document.getElementById('guidedPromptRequiredChk');
+            const required = !!(requiredChk && requiredChk.checked);
+
+            const typeEl = document.getElementById('guidedPromptType');
             const promptType = typeEl ? typeEl.value : 'reflection';
-            const typeLabels = { question: 'Question', resource: 'Resource', reflection: 'Reflection', assignment: 'Assignment response', general: 'General' };
-            const required = requiredEl && requiredEl.value === 'yes';
 
-            if (highlightText) {
-                sparkQuestions[nextSparkId] = {
-                    text: instructions || title,
-                    context: highlightText,
-                    hasVideo: !!hasVideo,
-                    responseCount: 0
-                };
-                showToast('Guided prompt created with highlight! Type: ' + (typeLabels[promptType] || promptType) + '. It will appear when learners click that text. Also shown in "' + section + '"' + (required ? ' (required).' : '.'));
-                nextSparkId++;
-            } else {
-                showToast('Guided prompt created! Type: ' + (typeLabels[promptType] || promptType) + '. It will appear when learners are in "' + section + '"' + (required ? ' (required for completion).' : '.') + ' ✨');
-            }
+            const videoUrlEl = document.getElementById('guidedPromptVideoUrl');
+            const hasVideo = videoUrlEl && videoUrlEl.value && videoUrlEl.value.trim();
 
-            if (titleEl) titleEl.value = '';
-            if (instructionsEl) instructionsEl.value = '';
+            // Prototype: discussion prompt is acknowledged but not injected into content.
+            showToast('Discussion prompt created! Type: ' + (typeLabels[promptType] || promptType) + '. It will appear for learners in "' + section + '"' + (required ? ' (counts toward completion).' : '.') + (hasVideo ? ' 🎬' : ' ✨'));
+
+            if (textEl) textEl.value = '';
+            if (requiredChk) requiredChk.checked = false;
             if (typeEl) typeEl.value = 'reflection';
-            if (showInEl) showInEl.value = 'The Base Case';
-            if (requiredEl) requiredEl.value = 'no';
-            if (highlightInput) highlightInput.value = '';
             if (videoUrlEl) videoUrlEl.value = '';
-            const preview = document.getElementById('guidedPromptHighlightPreview');
-            if (preview) { preview.textContent = 'No text selected'; preview.classList.remove('has-value'); }
         }
 
         function toggleTeachingMomentVisibility() {
             const checkbox = document.getElementById('teachingMomentToggle');
             const card = document.getElementById('teachingMomentCard');
             if (card) card.style.display = checkbox && checkbox.checked ? '' : 'none';
+        }
+
+        function toggleLearnerExperienceUI() {
+            const checkbox = document.getElementById('learnerExperienceToggle');
+            const container = document.getElementById('mainContainer');
+            if (!container) return;
+            const showExtras = checkbox && checkbox.checked;
+            container.classList.toggle('learner-experience-hidden', !showExtras);
         }
 
         function createTeachingMoment() {
